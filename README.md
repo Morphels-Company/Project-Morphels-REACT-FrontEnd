@@ -30,7 +30,7 @@ Para ajustar, edite `.env`
 VITE_DATABASE_URL_ROOT='http://SEU_BACKEND:3000'
 ```
 > [!IMPORTANT]
-> O nome da variavel de ambiente não deve ser, em hipotese alguma. alterada, visto que é o mesmo nome utilizado em produção.
+> O nome da variavel de ambiente não deve ser, em hipotese alguma, alterada, visto que é o mesmo nome utilizado em produção.
 
 ## 🏃Executar
 
