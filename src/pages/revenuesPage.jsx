@@ -5,7 +5,6 @@ import Header2 from "../components/header2.jsx";
 import OpenFromButton from "../components/openFromButton.jsx";
 import DataBalons from "../components/dadaBalons.jsx";
 import SearchArea from "../components/searchArea.jsx";
-import SearchBar from "../components/searchBar.jsx";
 import Filt from "../components/filt.jsx";
 import ModalRevenues from "../components/modalRevenues.jsx";
 import SideMenu from "../components/sideMenu.jsx";
@@ -14,6 +13,7 @@ import { MenuProvider } from "../context/menuContext.jsx";
 import {useForm} from "react-hook-form";
 import MainRequests from "../services/requests.js";
 import Inputs from "../components/inputs.jsx";
+import NumericInputs from "../components/numericInputs.jsx";
 
 const requests = new MainRequests()
 
@@ -32,7 +32,7 @@ function RevenuesPage() {
     const [branches, setBranches] = useState([]);
     const [filted, setFilted] = useState([]);
 
-    const {register, watch, setValue, handleSubmit} = useForm({
+    const {register, watch, setValue, handleSubmit, reset} = useForm({
         defaultValues:{
             member: "",
             type: "",
@@ -114,7 +114,7 @@ function RevenuesPage() {
 
 
     return (
-        <div className="justify-center h-[100vh] w-full">
+        <div className="justify-center h-screen w-full">
             <MenuProvider>
                 <Header/>
                 <SideMenu/>
@@ -155,6 +155,7 @@ function RevenuesPage() {
                                             try {
                                                 await requests.onPost("revenues", data)
                                                 fetchData().then()
+                                                reset()
                                             } catch (error) {
                                                 console.error(error)
                                             }
@@ -201,6 +202,8 @@ function RevenuesPage() {
                                             {index:"outros", title: "Outros"},
 
                                         ]} />
+                                        <NumericInputs id="values" type="number" placeholder="R$ 00,00" children="Valor" step="0.01"
+                                                       register={{...register("value")}} format={"(##) # ####-####"}/>
                                         <Inputs id="values" type="number" placeholder="R$ 00,00" children="Valor" step="0.01"
                                                 register={{...register("value")}}></Inputs>
 

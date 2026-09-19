@@ -550,13 +550,17 @@ export function Page3() {
     const [showScanner, setShowScanner] = useState(false)
     const [filted, setFilted] = useState([])
     const [search, setSearch] = useState("")
-    const {register, watch, setValue, handleSubmit} = useForm();
+    const {register, watch, setValue, handleSubmit} = useForm({
+        defaultValues:{
+            bar_code: "",
+            member: "",
+
+        }
+    });
 
     const fetchData = async () => {
         try {
-            // const response_revenues = await request.onGet("revenues", search);
-            const response_members = await request.onGet("members", search);
-            // setRevenues(response_revenues);
+            const response_members = await requests.onGet("members", search);
             setMembers(response_members);
 
         } catch (error) {

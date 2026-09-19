@@ -1,7 +1,7 @@
 import Menu from '../components/menu.jsx';
 import Header from '../components/header.jsx';
 import Balons from '../components/balons.jsx';
-import Grafics from '../components/grafics.jsx';
+import Graphics from '../components/graphics.jsx';
 import { BadgeDollarSign } from 'lucide-react';
 import MainRequests from "../services/requests.js";
 import {useEffect, useState} from "react";
@@ -49,7 +49,7 @@ function DashBoard () {
         </section>
       </div>
       <section className="flex justify-center m-auto w-[80vw] md:w-[55vw]">
-        <Grafics title={'Grafico teste'} description={'Estou testando o modelo de gráfico'} grafic={'Gráfico'} />
+        <Graphics title={'Grafico teste'} description={'Estou testando o modelo de gráfico'} grafic={'Gráfico'} />
       </section>
     </div>
   )}
