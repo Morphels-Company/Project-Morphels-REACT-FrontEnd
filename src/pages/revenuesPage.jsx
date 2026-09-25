@@ -47,7 +47,6 @@ function RevenuesPage() {
 
     const onShowForm = () => {
         setShowForm(!showForm);
-        console.log("Button clicked! Show form:", showForm);
     };
 
     const fetchData = async () => {
@@ -85,7 +84,6 @@ function RevenuesPage() {
             }
         }
 
-        console.log(type)
         onFilterRevenues().then(); //
     }, [type, start_date, end_date]);
 
@@ -93,7 +91,6 @@ function RevenuesPage() {
         if (searchTerm && searchTerm.length > 0) {
             const result = members.filter((member) =>
                 member.name.toLowerCase().includes(searchTerm.toLowerCase()));
-            console.log(result)
             if (searchTerm === result[0].name) {
                 return
             }
@@ -202,8 +199,6 @@ function RevenuesPage() {
                                             {index:"outros", title: "Outros"},
 
                                         ]} />
-                                        <NumericInputs id="values" type="number" placeholder="R$ 00,00" children="Valor" step="0.01"
-                                                       register={{...register("value")}} format={"(##) # ####-####"}/>
                                         <Inputs id="values" type="number" placeholder="R$ 00,00" children="Valor" step="0.01"
                                                 register={{...register("value")}}></Inputs>
 

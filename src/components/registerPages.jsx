@@ -57,14 +57,12 @@ export function Page1(){
         onGetMembers(searchMembers).then();
     },[])
 
-    console.log(members)
 
     async function onDeleteMember(id){
         try{
             const deleted_member = await requests.onDelete("members", id);
 
             onGetMembers(searchMembers).then()
-            console.log(deleted_member)
         }catch(error){
             console.log(error);
         }
@@ -225,7 +223,6 @@ export function Page2(){
     async function onGetCompanies() {
         try {
             const response = await requests.onGet("companies", search);
-            console.log(response);
             setCompanies(response);
         } catch (error) {
             console.error('Error fetching companies:', error);
@@ -246,7 +243,6 @@ export function Page2(){
             const deleted_company = await requests.onDelete("companies", id)
 
             onGetCompanies().then()
-            console.log(deleted_company)
         }catch(error){
             console.log(error)
         }
