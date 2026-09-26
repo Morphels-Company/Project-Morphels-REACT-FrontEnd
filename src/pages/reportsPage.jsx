@@ -55,7 +55,7 @@ function ReportsPage() {
                       />
                       <div className="flex justify-center">
                           <OpenFromButton onClick={() => setShowModal(true)} >
-                              {"New Report"}
+                              {"Novo Relatório"}
                           </OpenFromButton>
                       </div>
                   </section>

@@ -81,7 +81,7 @@ export function Page1(){
                         />
                         <div className="flex justify-center">
                             <OpenFromButton
-                                onClick={() => setShowMemberForm(!showMemberForm)}>{showMemberForm ? "Cancel" : "New Member"}</OpenFromButton>
+                                onClick={() => setShowMemberForm(!showMemberForm)}>{showMemberForm ? "Cancelar" : "Novo Membro"}</OpenFromButton>
                         </div>
                     </section>
                     {showMemberForm && (
@@ -98,13 +98,13 @@ export function Page1(){
 
                                 <section className="flex flex-row gap-4 w-full">
                                     <Inputs id="cellphone" type="text" placeholder={'(61) 91234-5678'}
-                                            register={{...register("cellphone")}}>Cellphone *</Inputs>
+                                            register={{...register("cellphone")}}>Telefone *</Inputs>
                                     <Inputs id="dateBorn" type="date" register={{...register("date_birth")}}>Date
                                         of Birth</Inputs>
                                 </section>
                                 <section className="flex flex-row gap-4 w-full">
                                     <Inputs id="pixKey" type="text" placeholder={'Write the Pix key.'}
-                                            register={{...register("pixkey")}}>Pix Key</Inputs>
+                                            register={{...register("pixkey")}}>Chave PIX</Inputs>
                                     <Select id={"pixtype"} register={{...register("pixtype")}} title={"Tipo de chave"} options={[
                                         {index:"", title:'Tipo de chave'},
                                         {index:"cpf", title:'CPF'},
@@ -142,13 +142,13 @@ export function Page1(){
             <div className="flex justify-center">
                 <div
                     className="flex flex-col justify-center mt-7 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[80vw] md:w-[55vw]">
-                    <Header2 title={"Registed Member"} description={""}/>
+                    <Header2 title={"Cadastro de Membros"} description={""}/>
                     <section className="flex items-center gap-2">
                         <Search size={16} className="text-gray-500"/>
                         <SearchBar placeholder="Member" type="text" id="member" value={searchMembers} onChange={(e) => setSearchMembers(e.target.value)} />
                     </section>
                     <section className="w-full rounded-lg border border-bg-secondary-destack-color overflow-auto">
-                        <table className="w-full min-w-[800px]">
+                        <table className="w-full min-w-200">
                             <thead className="">
                             <tr className="h-10 text-xs text-left border-b border-b-bg-secondary-destack-color">
                                 <th className="px-2">Nome</th>
@@ -259,7 +259,7 @@ export function Page2(){
                     />
                     <div className="flex justify-center">
                         <OpenFromButton
-                            onClick={() => setShowCompaniesForm(!showCompaniesForm)}>{showCompaniesForm ? "Cancel" : "New Company"}</OpenFromButton>
+                            onClick={() => setShowCompaniesForm(!showCompaniesForm)}>{showCompaniesForm ? "Cancelar" : "Nova Empresa"}</OpenFromButton>
                     </div>
                 </section>
                 {showCompaniesForm && (
@@ -289,9 +289,9 @@ export function Page2(){
 
                                 <section className="flex flex-row gap-4 w-full">
                                     <Inputs id="companyName" type="text" placeholder={'Empresa ABC LTDA'}
-                                            register={{...register("company_name")}}>Company Name *</Inputs>
+                                            register={{...register("company_name")}}>Nome da Compania*</Inputs>
                                     <Inputs id="fantasyName" type="text" placeholder={'ABC Empresa'}
-                                            register={{...register("fantasy_name")}}>Fantasy Name</Inputs>
+                                            register={{...register("fantasy_name")}}>Nome Fantasia</Inputs>
 
                                 </section>
                                 <section className="flex flex-row gap-4 w-full">
@@ -304,8 +304,7 @@ export function Page2(){
 
                                 </section>
                                 <section className="flex flex-row gap-4 w-full">
-                                    <Inputs id="pixKey" type="date" register={{...register("open_date")}}>Open
-                                        Date</Inputs>
+                                    <Inputs id="pixKey" type="date" register={{...register("open_date")}}>Data de Abertura</Inputs>
 
                                     <Select id={"situations"} register={{...register("situation")}} title={"Situação"} options={[
                                         {index:"", title:"Selecione uma opção"},
@@ -319,7 +318,7 @@ export function Page2(){
                             <article className="space-y-3">
                                 <section className="flex gap-2 items-center mb-4 mt-4">
                                     <MapPin size={21}/>
-                                    <h2 className="text-sm font-bold">Empress's Data</h2>
+                                    <h2 className="text-sm font-bold">Dados da Empresa</h2>
                                 </section>
                                 <section className="flex flex-row gap-4 w-full items-end">
                                     <div className="flex flex-col items-start w-[20%] space-y-2">
@@ -329,7 +328,7 @@ export function Page2(){
                                     </div>
                                     <Inputs id="street" type="text"
                                             placeholder={'Street name, Avenue, etc'}
-                                            register={{...register("street")}}>Street </Inputs>
+                                            register={{...register("street")}}>Rua </Inputs>
                                 </section>
                                 <section className="flex flex-row gap-4 w-full items-end">
                                     <div className="flex flex-col items-start w-[20%] space-y-2">
@@ -338,7 +337,7 @@ export function Page2(){
                                                 register={{...register("number")}}>Número </Inputs>
                                     </div>
                                     <Inputs id="complement" type="text" placeholder={'Sala, Andar, etc'}
-                                            register={{...register("complement")}}>Complement </Inputs>
+                                            register={{...register("complement")}}>Complemento </Inputs>
                                 </section>
                                 <section className="flex flex-row gap-4 w-full items-end">
                                     <Inputs id="neighborhood" type="text" placeholder={'Neighborhood name'}
@@ -390,7 +389,7 @@ export function Page2(){
                                 </section>
                                 <section className="flex flex-row gap-4 w-full items-end">
                                     <Inputs id="cellphone" type="text" placeholder={'(61) 91234-5678'}
-                                            register={{...register("cellphone")}}>Cellphone </Inputs>
+                                            register={{...register("cellphone")}}>Telefone </Inputs>
                                     <Inputs id="telephone" type="text" placeholder={'company@contact.com'}
                                             register={{...register("email")}}>E-mail </Inputs>
                                 </section>
@@ -431,7 +430,7 @@ export function Page2(){
                                         ]} />
                                     </div>
                                     <Inputs id="pixKeyPayment" type="text"
-                                            placeholder={'Write the Pix key.'}
+                                            placeholder={'Chave PIX'}
                                             register={{...register("pixkey")}}>Pix Key</Inputs>
                                 </section>
 
@@ -600,7 +599,7 @@ export function Page3() {
                         />
                         <div className="flex justify-center">
                             <OpenFromButton
-                                onClick={() => setShowCardsForm(!showCardsForm)}>{showCardsForm ? "Cancel" : "New Card"}</OpenFromButton>
+                                onClick={() => setShowCardsForm(!showCardsForm)}>{showCardsForm ? "Cancelar" : "Novo cartão"}</OpenFromButton>
                         </div>
                     </section>
                     {showCardsForm && (

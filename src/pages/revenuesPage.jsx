@@ -91,7 +91,7 @@ function RevenuesPage() {
         if (searchTerm && searchTerm.length > 0) {
             const result = members.filter((member) =>
                 member.name.toLowerCase().includes(searchTerm.toLowerCase()));
-            if (searchTerm === result[0].name) {
+            if (searchTerm === result[0]?.name) {
                 return
             }
             setShowOptions(true)
@@ -128,7 +128,7 @@ function RevenuesPage() {
                         />
                         <div className="flex justify-center">
                             <OpenFromButton onClick={onShowForm}>
-                                {"New Revenue"}
+                                {"Nova receita"}
                             </OpenFromButton>
                         </div>
                     </section>
