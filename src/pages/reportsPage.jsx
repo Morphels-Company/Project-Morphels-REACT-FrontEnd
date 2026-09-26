@@ -50,8 +50,8 @@ function ReportsPage() {
               <div className="flex flex-col justify-center mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[80vw] md:w-[55vw]">
                   <section className="flex justify-between items-center">
                       <Header2
-                          title={"Revenues Form"}
-                          description={"Form to add new revenues"}
+                          title={"Formulário de relatórios"}
+                          description={"Formulário de cadastro de relatórios"}
                       />
                       <div className="flex justify-center">
                           <OpenFromButton onClick={() => setShowModal(true)} >

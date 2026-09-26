@@ -12,9 +12,9 @@ function Register() {
     const [permissions, setPermissions] = useState([1,2,3]);
 
     const pages = [
-        { id: 1, name: "Member", permission: 1, component: <Page1 />, icon: <Users  size={14}/> },
-        { id: 2, name: "Companies", permission: 2, component: <Page2 />, icon: <Building2  size={14}/> },
-        { id: 3, name: "Cards", permission: 3, component: <Page3 />, icon: <IdCard size={14}/> },
+        { id: 1, name: "Membros", permission: 1, component: <Page1 />, icon: <Users  size={14}/> },
+        { id: 2, name: "Companias", permission: 2, component: <Page2 />, icon: <Building2  size={14}/> },
+        { id: 3, name: "Cartões", permission: 3, component: <Page3 />, icon: <IdCard size={14}/> },
     ];
 
     const currentPage = pages.find(p => p.permission === activePage && permissions.includes(p.permission));

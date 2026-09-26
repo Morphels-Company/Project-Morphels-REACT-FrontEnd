@@ -21,27 +21,27 @@ function Menu() {
         revenues: {
             path: "/revenues",
             icon: <ChartColumn size={14}/>,
-            title: "Revenues",
+            title: "Receitas",
         },
         expenses: {
             path: "/expenses",
             icon: <Receipt size={14}/>,
-            title: "Expenses",
+            title: "Despesas",
         },
         register: {
             path: "/register",
             icon: <Users size={14}/>,
-            title: "Register",
+            title: "Registros",
         },
         reports: {
             path: "/reports",
             icon: <FileText size={14}/>,
-            title: "Reports",
+            title: "Relatórios",
         },
         settings: {
             path: "/settings",
             icon: <Settings size={14}/>,
-            title: "Settings",
+            title: "Configurações",
         }
     }
 

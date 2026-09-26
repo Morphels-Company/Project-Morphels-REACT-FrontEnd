@@ -13,12 +13,13 @@ import MainRequests from "../services/requests.js";
 import {MenuProvider} from "../context/menuContext.jsx";
 import SideMenu from "../components/sideMenu.jsx";
 import Select from "../components/select.jsx";
+import Inputs from "../components/inputs.jsx";
 
 const requests = new MainRequests()
 
 function ExpensesPage() {
 
-    const [showForma, setShowForma] = useState(false);
+    const [showForm, setShowForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
     const [editData, setEditData] = useState(null);
     const [expenses, setExpences] = useState([]);
@@ -29,12 +30,22 @@ function ExpensesPage() {
         [end_date, setEnd_date] = useState("")
     const [branches, setBranches] = useState([]);
 
-  const { register, handleSubmit } = useForm();
+    const { register, handleSubmit } = useForm({
+        defaultValues: {
+            title: "",
+            type: "",
+            value: "",
+            payment: "",
+            date:'',
+            branch: "",
+            beneficiary:""
 
-  const onShowForm =  () => {
-    setShowForma(!showForma);
+        }});
 
-  }
+    const onShowForm =  () => {
+    setShowForm(!showForm);
+
+    }
     const fetchData = async () => {
         try {
             const expensesResponse = await requests.onGet("expenses", search);
@@ -47,10 +58,17 @@ function ExpensesPage() {
         }
     };
 
+    useEffect (() => {
+        fetchData().then();
+    }, [search])
 
-  useEffect (() => {
-      fetchData().then();
-  }, [search])
+    const onSendData = async (data) => {
+      await requests.onPost("expenses", data)
+      fetchData().then()
+    }
+
+
+
 
     useEffect(() => {
         if (!type && !start_date && !end_date) return;
@@ -83,11 +101,11 @@ function ExpensesPage() {
         <div className="flex flex-col justify-center mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[80vw] md:w-[55vw]">
           <section className="flex justify-between items-center">
             <Header2
-              title={"Expences Form"}
-              description={"Form to add new expences"}
+              title={"Fomulário de despesas"}
+              description={"Formulário para adicionar despesas"}
             />
             <div className="flex justify-center">
-              <OpenFromButton onClick={onShowForm}>{"New Expences"}</OpenFromButton>
+              <OpenFromButton onClick={onShowForm}>{showForm ? "Fechar" : "Nova despesa"}</OpenFromButton>
             </div>
           </section>
             <SearchArea placeholder={"Search by description or member..."} showFilter={() => setShowFilter(!showFilter)}
@@ -100,24 +118,17 @@ function ExpensesPage() {
                                  onChangeStartDate={(e) => setStart_date(e.target.value)}
                                  onChangeEndDate={(e) => setEnd_date(e.target.value)}
                                  options={["Manutenção", "Salários", "Projetos", "Utilidades", "Eventos", "Outros"]}/>}
-            {showForma && (
+            {showForm && (
             <div className="bg-bg-secondary-color p-3 rounded-sm border border-bg-secondary-destack-color">
-              <form action={() => {
-                  handleSubmit(async (data) => {
-                      await requests.onPost("expenses", data)
-                      onGetExpenses().then()
-                  })()
-
-                    }}
-                className="flex flex-col  space-y-3">
+              <form action={handleSubmit(onSendData)} className="flex flex-col  space-y-3">
                 <section className="flex flex-col items-start">
-                  <label htmlFor="Title" className="text-xs">Title</label>
-                  <SearchBar placeholder="Title" type="text" id="Title" {...register('title')} />
+                    <Inputs id="title" type="text" children="Titulo" placeholder="Despesa ..."
+                            register={{...register("title")}}></Inputs>
                 </section>
                 
                 
                 <section className="flex flex-row gap-4 w-full">
-                    <Select id={"type"} register={{...register("type")}} title={"Type"} options={[
+                    <Select id={"type"} register={{...register("type")}} title={"Tipo"} options={[
                         {index:"", title:"Selecione uma opção"},
                         {index:"manutencao", title:"Manutencao"},
                         {index:"salario", title:"Salários"},
@@ -127,24 +138,21 @@ function ExpensesPage() {
                         {index:"outros", title:"Outros"}
                     ]} />
 
-                  <div className="flex flex-col items-start w-full">
-                    <label htmlFor="value" className="text-xs">Valor</label>
-                    <SearchBar placeholder="00,00" type="number" step="0.01"  id="values" {...register('value')}  />
-                  </div>
+                    <Inputs id="value" type="number" children="Valor" placeholder="R$ 00,00" step="0.01"
+                            register={{...register("value")}}></Inputs>
+
                 </section >
                 <section className="flex flex-row gap-4 w-full">
-                    <Select id={"payment"} register={{...register("payment")}} title={"Payment"} options={[
+                    <Select id={"payment"} register={{...register("payment")}} title={"Meio de pagamento"} options={[
                         {index:"", title: "Selecione uma opção"},
                         {index:"pix_deposito", title: "Pix/Depósito"},
                         {index:"dinheiro", title: "Dinheiro"},
                         {index:"cheque", title: "Cheque"}
                     ]} />
-                  <div className="flex flex-col items-start w-full">
-                    <label htmlFor="date" className="text-xs">Data</label>
-                    <SearchBar placeholder="Enter category" type="date"  id="date" {...register('date')}  />
-                  </div>
+                    <Inputs id="date" type="date" children="Data"
+                            register={{...register("date")}}></Inputs>
                 </section >
-                <section className="flex flex-col items-start">
+                <section className="flex flex-col items-start gap-3">
                     <Select id={"branch"} register={{...register("branch")}} title={"Filial"} options={[
                         {index:"", title: "Selecione uma opção"},
                         ...branches.map(branch => ({
@@ -153,15 +161,15 @@ function ExpensesPage() {
                             title: String(branch.name)
                         }))
                     ]} />
+                    <Inputs id="beneficiary" type="text" children="Beneficiado" placeholder="Lojas ABC"
+                            register={{...register("beneficiary")}}></Inputs>
 
-                  <label htmlFor="beneficiary" className="text-xs">Supplier/recepient</label>
-                  <SearchBar placeholder="Supplier/recepient" type="text" id="beneficiary" {...register('beneficiary')} />
                 </section>
               
               
                 <div className="w-full flex flex-row mt-4 gap-4 ">
-                      <button className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit</button>
-                      <button className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel</button>
+                      <button type={"submit"} className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit</button>
+                      <button onClick={() => setShowForm(false)} className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel</button>
                   </div>
               </form>
             </div>
@@ -186,7 +194,12 @@ function ExpensesPage() {
               }}
             />
           ))}
-            {showEditForm && <ModalExpenses onGetExpenses={() => fetchData()} onHideForm={() => setShowEditForm(!showEditForm)} complete={editData}/>}
+            {showEditForm && <ModalExpenses
+                onGetExpenses={() => fetchData()}
+                onHideForm={() => setShowEditForm(!showEditForm)}
+                complete={editData}
+                branches={branches}
+            />}
         </div>
       </div>
     </div>

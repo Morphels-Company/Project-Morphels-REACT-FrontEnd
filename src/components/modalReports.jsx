@@ -31,7 +31,7 @@ function ModalReports({ onHideForm, onFetch, branches }) {
 
     return (
         <div className="fixed inset-0 bg-[rgb(0,0,0,0.7)] bg-opacity-50 flex items-center justify-center">
-            <div className="flex flex-col bg-bg-secondary-color w-[80%] md:w-[55%] p-6 rounded-lg shadow-lg space-y-4 overflow-auto">
+            <div className="flex flex-col bg-bg-secondary-color h-[85%] w-[80%] md:w-[55%] p-6 rounded-lg shadow-lg space-y-4 overflow-auto">
                 <Header2
                     title={"Create new report"}
                     description={"Form to create reports"}
@@ -67,20 +67,11 @@ function ModalReports({ onHideForm, onFetch, branches }) {
 
                     <div className="flex flex-col items-start rounded-lg border border-bg-secondary-destack-color p-3 gap-3">
                         <h1 className={"text-xl bold mb-2"}>Period</h1>
-                        <section className="flex flex-col w-full items-start gap-1">
-                            <label htmlFor="start_date" className="text-xs ">
-                                Start´s date
-                            </label>
-                            <Inputs id="start_date" type="date"
-                                    register={{...register("start_date")}}></Inputs>
-                        </section>
-                        <section className="flex flex-col w-full items-start gap-1">
-                            <label htmlFor="end_date" className="text-xs">
-                                Type
-                            </label>
-                            <Inputs id="end_date" type="date"
-                                    register={{...register("end_date")}}></Inputs>
-                        </section>
+                        <Inputs id="start_date" type="date" children="Data inicial"
+                                register={{...register("start_date")}}></Inputs>
+                        <Inputs id="end_date" type="date" children="Data final"
+                                register={{...register("end_date")}}></Inputs>
+
                         <Select id={"branch"} register={{...register("branch")}} title={"Filial"} options={[
                             {index:"", title: "Selecione uma opção"},
                             ...branches.map(branch => ({

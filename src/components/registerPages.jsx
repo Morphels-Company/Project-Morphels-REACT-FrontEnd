@@ -14,7 +14,7 @@ import Header2 from "./header2.jsx";
 import OpenFromButton from "./openFromButton.jsx";
 import SearchBar from "./searchBar.jsx";
 import Inputs from "./inputs.jsx";
-import ModalInfo from "./modelInfo.jsx";
+import ModalInfo from "./modalInfo.jsx";
 import {useEffect, useState} from "react";
 import MainRequests from "../services/requests.js";
 import {useForm} from "react-hook-form";
@@ -57,14 +57,12 @@ export function Page1(){
         onGetMembers(searchMembers).then();
     },[])
 
-    console.log(members)
 
     async function onDeleteMember(id){
         try{
             const deleted_member = await requests.onDelete("members", id);
 
             onGetMembers(searchMembers).then()
-            console.log(deleted_member)
         }catch(error){
             console.log(error);
         }
@@ -78,8 +76,8 @@ export function Page1(){
                     className="flex flex-col justify-center mt-7 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[80vw] md:w-[55vw]">
                     <section className="flex justify-between items-center">
                         <Header2
-                            title={"Members Form"}
-                            description={"Form to add new member"}
+                            title={"Formulário de membros"}
+                            description={"Formulário para cadastrar membros"}
                         />
                         <div className="flex justify-center">
                             <OpenFromButton
@@ -225,7 +223,6 @@ export function Page2(){
     async function onGetCompanies() {
         try {
             const response = await requests.onGet("companies", search);
-            console.log(response);
             setCompanies(response);
         } catch (error) {
             console.error('Error fetching companies:', error);
@@ -246,7 +243,6 @@ export function Page2(){
             const deleted_company = await requests.onDelete("companies", id)
 
             onGetCompanies().then()
-            console.log(deleted_company)
         }catch(error){
             console.log(error)
         }
@@ -258,8 +254,8 @@ export function Page2(){
                 className="flex flex-col justify-center mt-7 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[80vw] md:w-[55vw]">
                 <section className="flex justify-between items-center">
                     <Header2
-                        title={"Companies Form"}
-                        description={"Form to add new company"}
+                        title={"Fomulário de companias"}
+                        description={"Formulário de cadastro de companias"}
                     />
                     <div className="flex justify-center">
                         <OpenFromButton
@@ -550,13 +546,17 @@ export function Page3() {
     const [showScanner, setShowScanner] = useState(false)
     const [filted, setFilted] = useState([])
     const [search, setSearch] = useState("")
-    const {register, watch, setValue, handleSubmit} = useForm();
+    const {register, watch, setValue, handleSubmit} = useForm({
+        defaultValues:{
+            bar_code: "",
+            member: "",
+
+        }
+    });
 
     const fetchData = async () => {
         try {
-            // const response_revenues = await request.onGet("revenues", search);
-            const response_members = await request.onGet("members", search);
-            // setRevenues(response_revenues);
+            const response_members = await requests.onGet("members", search);
             setMembers(response_members);
 
         } catch (error) {
@@ -595,8 +595,8 @@ export function Page3() {
                     className="flex flex-col justify-center mt-7 p-4 bg-bg-secondary-color border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[80vw] md:w-[55vw]">
                     <section className="flex justify-between items-center">
                         <Header2
-                            title={"Cards form"}
-                            description={"Form to add new members cards"}
+                            title={"Formulário de cartões"}
+                            description={"Formulário para cadastrar cartões de fidelidade"}
                         />
                         <div className="flex justify-center">
                             <OpenFromButton
@@ -626,7 +626,7 @@ export function Page3() {
                                             Member
                                         </label>
                                         <input
-                                            className="w-full text-xs bg-gray-100 border rounded-md border-gray-100 hover:cursor-auto focus:border-gray-400 focus:outline-none placeholder:text-gray-500 transition-all px-2 py-2"
+                                            className="w-full text-xs bg-bg-secondary-color border border-bg-secondary-destack-color rounded-md hover:cursor-auto focus:border-gray-400 focus:outline-none placeholder:text-gray-500 transition-all px-2 py-2"
                                             placeholder="Member" type="text" id="member"
                                             {...register("member")} />
                                         {showOptions && filted.length !== 0 && <div

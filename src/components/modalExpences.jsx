@@ -3,8 +3,9 @@ import { useForm } from 'react-hook-form';
 import SearchBar from './searchBar.jsx';
 import Header2 from './header2.jsx';
 import Select from "./select.jsx";
+import Inputs from "./inputs.jsx";
 
-function ModalExpenses({complete, onHideForm, onGetExpenses}) {
+function ModalExpenses({complete, onHideForm, onGetExpenses, branches}) {
   const formatedData = complete ? {
     ...complete,
     date: complete.date.split('T')[0],
@@ -15,7 +16,7 @@ function ModalExpenses({complete, onHideForm, onGetExpenses}) {
   });
 
 
-    async function onEditExpence(data) {
+    async function onEditExpense(data) {
       console.log(data);
       await api.put(`/expenses/${complete.id}`, data)
       onGetExpenses()
@@ -28,47 +29,47 @@ function ModalExpenses({complete, onHideForm, onGetExpenses}) {
               title={"Expenses put Form"}
               description={"Form to edit expenses"}
         />
-        <form action={() => handleSubmit(onEditExpence)()} className="flex flex-col  space-y-3">
+        <form action={() => handleSubmit(onEditExpense)()} className="flex flex-col  space-y-3">
           <section className="flex flex-col items-start">
-            <label htmlFor="Title" className="text-xs">Title</label>
-            <SearchBar placeholder="Title" type="text" id="Title" {...register('title')}/>
+            <Inputs id="title" type="text" placeholder="Despesa..." children="Titulo"
+                    register={{...register("title")}}></Inputs>
           </section>
           
           
           <section className="flex flex-row gap-4 w-full">
-            <div className="flex flex-col items-start w-full">
-              <Select id={"type"} register={{...register("type")}} title={"Type"} options={[
-                {index:"", title:"Selecione uma opção"},
-                {index:"manutencao", title:"Manutencao"},
-                {index:"salario", title:"Salários"},
-                {index:"projetos", title:"Projetos"},
-                {index:"utilidades", title:"Utilidades"},
-                {index:"eventos", title:"Eventos"},
-                {index:"outros", title:"Outros"}
-              ]} />
-            </div>
-            <div className="flex flex-col items-start w-full">
-              <label htmlFor="value" className="text-xs">Value</label>
-              <SearchBar placeholder="00,0" type="number" step="0.01" id="values" {...register('value')}/>
-            </div>
+            <Select id={"type"} register={{...register("type")}} title={"Tipo"} options={[
+              {index:"", title:"Selecione uma opção"},
+              {index:"manutencao", title:"Manutencao"},
+              {index:"salario", title:"Salários"},
+              {index:"projetos", title:"Projetos"},
+              {index:"utilidades", title:"Utilidades"},
+              {index:"eventos", title:"Eventos"},
+              {index:"outros", title:"Outros"}
+            ]} />
+            <Inputs id="value" type="number" step="0.01" placeholder="R$ 00,00" children="Valor"
+                    register={{...register("value")}}></Inputs>
           </section >
           <section className="flex flex-row gap-4 w-full">
-            <div className="flex flex-col items-start w-full">
-              <Select id={"payment"} register={{...register("payment")}} title={"Payment"} options={[
-                {index:"", title: "Selecione uma opção"},
-                {index:"pix_deposito", title: "Pix/Depósito"},
-                {index:"dinheiro", title: "Dinheiro"},
-                {index:"cheque", title: "Cheque"}
-              ]} />
-            </div>
-            <div className="flex flex-col items-start w-full">
-              <label htmlFor="date" className="text-xs">Data</label>
-              <SearchBar placeholder="Enter category" type="date"  id="date" {...register('date')}  />
-            </div>
+            <Select id={"payment"} register={{...register("payment")}} title={"Meio de pagamento"} options={[
+              {index:"", title: "Selecione uma opção"},
+              {index:"pix_deposito", title: "Pix/Depósito"},
+              {index:"dinheiro", title: "Dinheiro"},
+              {index:"cheque", title: "Cheque"}
+            ]} />
+            <Inputs id="date" type="date" children="Data"
+                    register={{...register("date")}}></Inputs>
           </section >
-          <section className="flex flex-col items-start">
-            <label htmlFor="beneficiary" className="text-xs">Supplier/recepient</label>
-            <SearchBar placeholder="Supplier/recepient" type="text" id="beneficiary" {...register('beneficiary')}/>
+          <section className="flex flex-col items-start gap-3">
+            <Select id={"branch"} register={{...register("branch")}} title={"Filial"} options={[
+              {index:"", title: "Selecione uma opção"},
+              ...branches.map(branch => ({
+                index: String(branch.id),
+                // Fique de olho: no Postgres você chamou de 'nome', verifique se o JSON da API traz 'nome' ou 'name'
+                title: String(branch.name)
+              }))
+            ]} />
+            <Inputs id="beneficiary" type="text" children="Beneficiado" placeholder="Lojas ABC"
+                    register={{...register("beneficiary")}}></Inputs>
           </section>
         
         

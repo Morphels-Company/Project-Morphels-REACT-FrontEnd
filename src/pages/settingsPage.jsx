@@ -17,22 +17,22 @@ function SettingsPage() {
 
     const pages = {
         users: {
-            title: "Users",
+            title: "Usuários",
             component: <Page1 />,
             icon: <User size={14}/>
         },
         branches: {
-            title: "Branches",
+            title: "Usuários",
             component: <Page2 />,
             icon: <Church size={14}/>
         },
         sectors: {
-            title: "Sectors",
+            title: "Setores",
             component: <Page3 />,
             icon: <MapPinHouse size={14}/>
         },
         permissions:{
-            title: "Permissions",
+            title: "Permissões",
             component: <Page4 />,
             icon: <ListCheck size={14}/>
         }

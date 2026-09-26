@@ -3,6 +3,7 @@ import api from "../services/api.js";
 import SearchBar from "./searchBar.jsx";
 import Header2 from "./header2.jsx";
 import Select from "./select.jsx";
+import Inputs from "./inputs.jsx";
 
 function ModalRevenues({ complete, onHideForm, onGetRevenues, branches }) {
   const formatedData = complete ? {
@@ -33,61 +34,36 @@ function ModalRevenues({ complete, onHideForm, onGetRevenues, branches }) {
           className="flex flex-col  space-y-3"
         >
           <section className="flex flex-col items-start">
-            <label htmlFor="member" className="text-xs">
-              Member
-            </label>
-            <SearchBar
-              placeholder="Member"
-              type="text"
-              id="member"
-              {...register("member")}
-            />
+            <Inputs id="member" type="text" placeholder="Jose..." children="Membro"
+                    register={{...register("member")}}></Inputs>
           </section>
 
           <section className="flex flex-row gap-4 w-full">
-            <div className="flex flex-col items-start w-full">
-              <Select id={"type"} register={{...register("type")}} title={"Type"} options={[
-                {index:"", title: "Selecione uma opção"},
-                {index:"doação", title: "Doação"},
-                {index:"contribuicao_regular", title: "Contribuição Regular"},
-                {index:"oferta_especial", title: "Oferta Especial"},
-                {index:"subvencao", title: "Subvenção/Subsídio"},
-                {index:"patrocinio", title: "Patrocínio"},
-                {index:"venda_serviço", title: "Venda/Serviço"},
-                {index:"mensalidade", title: "Mensalidade"},
-                {index:"rendimento_financeiro", title: "Rendimento financeiro"},
-                {index:"outros", title: "Outros"},
+            <Select id={"type"} register={{...register("type")}} title={"Tipo"} options={[
+              {index:"", title: "Selecione uma opção"},
+              {index:"doação", title: "Doação"},
+              {index:"contribuicao_regular", title: "Contribuição Regular"},
+              {index:"oferta_especial", title: "Oferta Especial"},
+              {index:"subvencao", title: "Subvenção/Subsídio"},
+              {index:"patrocinio", title: "Patrocínio"},
+              {index:"venda_serviço", title: "Venda/Serviço"},
+              {index:"mensalidade", title: "Mensalidade"},
+              {index:"rendimento_financeiro", title: "Rendimento financeiro"},
+              {index:"outros", title: "Outros"},
 
-              ]} />
-            </div>
-            <div className="flex flex-col items-start w-full">
-              <label htmlFor="value" className="text-xs">
-                Values
-              </label>
-              <SearchBar
-                placeholder="00,0"
-                step="0.01"
-                type="number"
-                id="value"
-                {...register("value")}
-              />
-            </div>
+            ]} />
+            <Inputs id="values" type="number" placeholder="R$ 00,00" children="Valor" step="0.01"
+                    register={{...register("value")}}></Inputs>
           </section>
           <section className="flex flex-row gap-4 w-full">
-            <div className="flex flex-col items-start w-full">
-              <Select id={"payment"} register={{...register("payment")}} title={"Payment"} options={[
-                {index:"", title: "Selecione uma opção"},
-                {index:"pix_deposito", title: "Pix/Depósito"},
-                {index:"dinheiro", title: "Dinheiro"},
-                {index:"cheque", title: "Cheque"}
-              ]} />
-            </div>
-            <div className="flex flex-col items-start w-full">
-              <label htmlFor="date" className="text-xs">
-                Data
-              </label>
-              <SearchBar type="date" id="date" {...register("date")} />
-            </div>
+            <Select id={"payment"} register={{...register("payment")}} title={"Meio de pagamento"} options={[
+              {index:"", title: "Selecione uma opção"},
+              {index:"pix_deposito", title: "Pix/Depósito"},
+              {index:"dinheiro", title: "Dinheiro"},
+              {index:"cheque", title: "Cheque"}
+            ]} />
+            <Inputs id="date" type="date" children="Data"
+                    register={{...register("date")}}></Inputs>
           </section>
           <section className="flex flex-col items-start">
             <Select id={"branch"} register={{...register("branch")}} title={"Filial"} options={[
