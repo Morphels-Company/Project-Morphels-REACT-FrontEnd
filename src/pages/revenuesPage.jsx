@@ -51,9 +51,9 @@ function RevenuesPage() {
 
     const fetchData = async () => {
         try {
-            const response_revenues = await requests.onGet("revenues", search);
-            const response_members = await requests.onGet("members", search);
-            const response_branches = await requests.onGet("branches", search);
+            const response_revenues = await requests.onGet("revenues");
+            const response_members = await requests.onGet("members");
+            const response_branches = await requests.onGet("branches");
 
             setRevenues(response_revenues ? response_revenues: []);
             setMembers(response_members ? response_members : []);

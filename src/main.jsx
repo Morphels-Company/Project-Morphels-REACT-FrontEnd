@@ -6,7 +6,7 @@ import RevenuesPage from './pages/revenuesPage.jsx';
 import ExpensesPage from './pages/expensesPage.jsx';
 import Register from './pages/register.jsx';
 import ReportsPage from './pages/reportsPage.jsx';
-import LocalReportsPage from './pages/localReportsPage.jsx';
+import ReportPreset from './pages/reportPreset.jsx';
 import DashBoard from './pages/dashBoard.jsx';
 // import Teste from './components/scanner.jsx'
 import InstitutionRegister from "./pages/institutionRegister.jsx";
@@ -52,7 +52,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/reports/local",
-        element: <LocalReportsPage />,
+        element: <ReportPreset />,
       },
       {
         path: "/teste",

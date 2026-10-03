@@ -2,7 +2,7 @@ import api from "./api.js";
 
 class MainRequests  {
     async onGet (route, search) {
-        const response = await api.get(`/${route}?search=${encodeURIComponent(search)}`)
+        const response = await api.get(`/${route}`)
         return response.data
     }
 

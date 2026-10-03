@@ -51,22 +51,24 @@ const InvoicePDF = ({revenues, expenses, information}) => (
                 </View>
             </View>
             <View style={tw("border border-gray-200 m-0 p-2 gap-6")}>
-                <View>
+                {information?.resume &&(
+                    <View>
+                        <Table style={tw("w-full")}>
+                            <TH>
+                                <TD style={tw(th_style)}>Total Receitas</TD>
+                                <TD style={tw(th_style)}>Total Gastos</TD>
+                                <TD style={tw(th_style)}>Saldo</TD>
+                            </TH>
+                            <TR>
+                                <TD style={tw(td_style)}>R$ {revenues[0]?.revenues_sum !== undefined ? revenues[0].revenues_sum : 0 }</TD>
+                                <TD style={tw(td_style)}>R$ {expenses[0]?.expenses_sum !== undefined ? expenses[0].expenses_sum : 0}</TD>
+                                <TD style={tw(td_style)}>R$ {((revenues[0]?.revenues_sum !== undefined ? parseFloat(revenues[0].revenues_sum) : 0) - (expenses[0]?.expenses_sum !== undefined ? parseFloat(expenses[0].expenses_sum) : 0)).toFixed(2)}</TD>
+                            </TR>
+                        </Table>
+                    </View>
+                )}
 
-                    <Table style={tw("w-full")}>
-                        <TH>
-                            <TD style={tw(th_style)}>Total Receitas</TD>
-                            <TD style={tw(th_style)}>Total Gastos</TD>
-                            <TD style={tw(th_style)}>Saldo</TD>
-                        </TH>
-                        <TR>
-                            <TD style={tw(td_style)}>R$ {revenues[0]?.revenues_sum !== undefined ? revenues[0].revenues_sum : 0 }</TD>
-                            <TD style={tw(td_style)}>R$ {expenses[0]?.expenses_sum !== undefined ? expenses[0].expenses_sum : 0}</TD>
-                            <TD style={tw(td_style)}>R$ {((revenues[0]?.revenues_sum !== undefined ? parseFloat(revenues[0].revenues_sum) : 0) - (expenses[0]?.expenses_sum !== undefined ? parseFloat(expenses[0].expenses_sum) : 0)).toFixed(2)}</TD>
-                        </TR>
-                    </Table>
-                </View>
-                {revenues.length !== 0 && (<View>
+                {revenues.length !== 0 && information?.resume && (<View>
                     <Text style={tw("text-lg ")}>Receitas</Text>
                     <Table style={tw("w-full")}>
                         <TH>
@@ -94,7 +96,7 @@ const InvoicePDF = ({revenues, expenses, information}) => (
                         </TR>
                     </Table>
                 </View>)}
-                {expenses?.length > 0 && expenses.length !== 0 && (<View>
+                {expenses?.length > 0 && information?.expenses && (<View>
                     <Text style={tw("text-lg ")}>Gastos</Text>
                     <Table style={tw("w-full")}>
                         <TH>
@@ -128,7 +130,7 @@ const InvoicePDF = ({revenues, expenses, information}) => (
     </Document>
 );
 
-export default function LocalReportsPage(){
+export default function ReportPreset(){
     const [revenues, setRevenues] = useState([]);
     const [expenses, setExpenses] = useState([]);
     const [information, setInformation] = useState([]);
@@ -137,12 +139,34 @@ export default function LocalReportsPage(){
     const {report_id} = location.state || {}
     async function onGetData() {
         try {
-            const finance_response = await requests.onPost(`reports/finance/${report_id}`, {});
-            const infos_response = await requests.onGet(`users/infos`, "")
+            const reports_data = await requests.onGet(`reports/${report_id}`)
+            setInformation(reports_data[0]?.items)
 
-            setRevenues(finance_response.data.filterRevenues);
-            setExpenses(finance_response.data.filterExpenses)
-            setInformation(infos_response)
+            try{
+                const branch_data = await requests.onGet(`branches/${reports_data?.branch}`)
+                const sector_data = await requests.onGet(`sectors/${reports_data?.sector}`)
+
+                setInformation(branch_data[0], sector_data[0], ...information)
+            }catch (error) {
+                console.log(error)
+            }
+
+            if (reports_data?.items.revenues !== false ) {
+                try{
+                    const revenues_response = await requests.onGet(`revenues/${reports_data?.start_date}/${reports_data?.end_date}`);
+                    setRevenues(revenues_response);
+                }catch(error){
+                    console.log(error);
+                }
+            }
+            if (reports_data?.items.expenses !== false ) {
+                try{
+                    const expenses_response = await requests.onGet(`expenses/${reports_data?.start_date}/${reports_data?.end_date}`);
+                    setExpenses(expenses_response);
+                }catch(error){
+                    console.log(error);
+                }
+            }
         } catch (error) {
             console.log(error);
         }

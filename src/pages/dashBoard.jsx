@@ -5,26 +5,26 @@ import Graphics from '../components/graphics.jsx';
 import { BadgeDollarSign } from 'lucide-react';
 import MainRequests from "../services/requests.js";
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
 import {MenuProvider} from "../context/menuContext.jsx";
 import SideMenu from "../components/sideMenu.jsx";
 
 const requests = new MainRequests();
 
 function DashBoard () {
-    const navigate = useNavigate();
     const [sumRevenues, setSumRevenues] = useState(0);
     const [sumExpenses, setSumExpenses] = useState(0);
 
     async function onGetFinanceData (){
-        const start_date = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-        const end_date = new Date()
-        const finance_response = await requests.onPost(`dashboard`, {start_date, end_date});
+        const start_date = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
+        const end_date = new Date().toISOString()
+        console.log(start_date)
+        console.log(end_date)
+        const revenues_reports = await requests.onGet(`revenues/${start_date}/${end_date}`, "");
+        const expenses_reports = await requests.onGet(`expenses/${start_date}/${end_date}`, "");
 
-        console.log(finance_response);
 
-        setSumExpenses(finance_response.data.expenses);
-        setSumRevenues(finance_response.data.revenues);
+        setSumExpenses(revenues_reports.data.expenses.expenses_sum);
+        setSumRevenues(expenses_reports.data.revenues.revenues_sum);
     }
 
     useEffect(() => {

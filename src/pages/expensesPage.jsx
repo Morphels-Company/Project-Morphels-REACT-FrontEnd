@@ -32,13 +32,13 @@ function ExpensesPage() {
 
     const { register, handleSubmit } = useForm({
         defaultValues: {
-            title: "",
-            type: "",
-            value: "",
-            payment: "",
-            date:'',
-            branch: "",
-            beneficiary:""
+            title: null,
+            type: null,
+            value: null,
+            payment: null,
+            date: null,
+            branch: null,
+            beneficiary: null
 
         }});
 
