@@ -180,7 +180,7 @@ export default function ReportPreset() {
             // 3. Busca de receitas e despesas (Corrigido: acessando report.start_date em vez de reports_data)
             if (report.items?.revenues && report.start_date && report.end_date) {
                 try {
-                    const revenues_response = await requests.onGet(`revenues/${report.start_date}/${report.end_date}`);
+                    const revenues_response = await requests.onGet(`revenues/${new Date(report.start_date).toISOString()}/${new Date(report.end_date).toISOString()}`);
                     setRevenues(revenues_response);
                 } catch (error) {
                     console.log("Erro receitas:", error);
@@ -189,7 +189,7 @@ export default function ReportPreset() {
 
             if (report.items?.expenses && report.start_date && report.end_date) {
                 try {
-                    const expenses_response = await requests.onGet(`expenses/${report.start_date}/${report.end_date}`);
+                    const expenses_response = await requests.onGet(`expenses/${new Date(report.start_date).toISOString()}/${new Date(report.end_date).toISOString()}`);
                     setExpenses(expenses_response);
                 } catch (error) {
                     console.log("Erro despesas:", error);
