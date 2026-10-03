@@ -48,7 +48,7 @@ function App() {
                 <input type="checkbox" name="lembreme" id="lembreme"/>
                 <label htmlFor="lembreme" className='text-sm text-primary-titles-color ml-2'>Lembre-me</label>
               </div>
-              <a href="#" className='hover:underline'>Esqueci a senha</a>
+              <a href="#" className='text-primary-titles-color hover:underline'>Esqueci a senha</a>
             </article>
             <button type='submit' className='bg-buttons-color hover:bg-buttons-hover text-secondary-titles-color rounded-sm p-1'>Entrar</button>
           </section>

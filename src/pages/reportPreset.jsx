@@ -41,17 +41,17 @@ const InvoicePDF = ({revenues, expenses, information}) => (
             </View>
             <View style={tw("flex flex-row justify-start gap-2 items-end border border-gray-200 m-0 p-2")}>
                 <View style={tw("w-full pl-[10px] text-sm")}>
-                    <Text style={tw("space-x-20")}>Igreja: {information.branch}</Text>
-                    <Text>Pastor local: {information.branch_owner}</Text>
-                    <Text>Tesoureiro: {information.user_name}</Text>
+                    <Text style={tw("space-x-20")}>Igreja: {information.branch?.name}</Text>
+                    <Text>Pastor local: {information.branch?.owner}</Text>
+                    <Text>Tesoureiro: {information.user?.name}</Text>
                 </View>
                 <View style={tw("w-full pl-[10px] text-sm")}>
-                    <Text>Coordenador setorial: {information.sectorial_coordinator}</Text>
-                    <Text>Setor: {information.sector_name}</Text>
+                    <Text>Coordenador setorial: {information.sector?.sectorial_cordenator}</Text>
+                    <Text>Setor: {information.sector?.name}</Text>
                 </View>
             </View>
             <View style={tw("border border-gray-200 m-0 p-2 gap-6")}>
-                {information?.resume &&(
+                {information.items?.resume &&(
                     <View>
                         <Table style={tw("w-full")}>
                             <TH>
@@ -68,7 +68,7 @@ const InvoicePDF = ({revenues, expenses, information}) => (
                     </View>
                 )}
 
-                {revenues.length !== 0 && information?.resume && (<View>
+                {revenues.length !== 0 && information.items?.revenues && (<View>
                     <Text style={tw("text-lg ")}>Receitas</Text>
                     <Table style={tw("w-full")}>
                         <TH>
@@ -96,7 +96,7 @@ const InvoicePDF = ({revenues, expenses, information}) => (
                         </TR>
                     </Table>
                 </View>)}
-                {expenses?.length > 0 && information?.expenses && (<View>
+                {expenses?.length > 0 && information.items?.expenses && (<View>
                     <Text style={tw("text-lg ")}>Gastos</Text>
                     <Table style={tw("w-full")}>
                         <TH>
@@ -130,60 +130,94 @@ const InvoicePDF = ({revenues, expenses, information}) => (
     </Document>
 );
 
-export default function ReportPreset(){
+export default function ReportPreset() {
     const [revenues, setRevenues] = useState([]);
     const [expenses, setExpenses] = useState([]);
-    const [information, setInformation] = useState([]);
+    const [information, setInformation] = useState({});
+    const [loading, setLoading] = useState(true);
     const location = useLocation();
 
-    const {report_id} = location.state || {}
+    const { report_id } = location.state || {};
+
     async function onGetData() {
+        if (!report_id) return;
+
         try {
-            const reports_data = await requests.onGet(`reports/${report_id}`)
-            setInformation(reports_data[0]?.items)
+            const reports_data = await requests.onGet(`reports/${report_id}`);
+            const report = reports_data?.[0]; // Guardamos o primeiro item em uma variável limpa
 
-            try{
-                const branch_data = await requests.onGet(`branches/${reports_data?.branch}`)
-                const sector_data = await requests.onGet(`sectors/${reports_data?.sector}`)
+            console.log(report);
 
-                setInformation(branch_data[0], sector_data[0], ...information)
-            }catch (error) {
-                console.log(error)
+            if (!report) return;
+
+            // 1. Busca branch e sector em paralelo para melhor performance
+            let branch_data = null;
+            let sector_data = null;
+            let user_data;
+
+            try {
+
+                [branch_data, sector_data, user_data] = await Promise.all([
+                    report.branch ? requests.onGet(`branches/${report.branch}`) : null,
+                    report.sector ? requests.onGet(`sectors/${report.sector}`) : null,
+                    report.by ? requests.onGet(`users/${report.by}`) : null
+                ]);
+            } catch (error) {
+                console.log("Erro ao buscar filial/setor:", error);
             }
 
-            if (reports_data?.items.revenues !== false ) {
-                try{
-                    const revenues_response = await requests.onGet(`revenues/${reports_data?.start_date}/${reports_data?.end_date}`);
+            // 2. Atualiza o estado de uma só vez usando array com os dados coletados
+            const updatedInformation = {
+                items: (report ? report.items : []),
+                branch: (branch_data ? branch_data: []),
+                sector: (sector_data ? sector_data : []),
+                user: (user_data ? user_data : []),
+                };
+
+            setInformation(updatedInformation);
+
+
+            // 3. Busca de receitas e despesas (Corrigido: acessando report.start_date em vez de reports_data)
+            if (report.items?.revenues && report.start_date && report.end_date) {
+                try {
+                    const revenues_response = await requests.onGet(`revenues/${report.start_date}/${report.end_date}`);
                     setRevenues(revenues_response);
-                }catch(error){
-                    console.log(error);
+                } catch (error) {
+                    console.log("Erro receitas:", error);
                 }
             }
-            if (reports_data?.items.expenses !== false ) {
-                try{
-                    const expenses_response = await requests.onGet(`expenses/${reports_data?.start_date}/${reports_data?.end_date}`);
-                    setExpenses(expenses_response);
-                }catch(error){
-                    console.log(error);
-                }
-            }
-        } catch (error) {
-            console.log(error);
-        }
 
+            if (report.items?.expenses && report.start_date && report.end_date) {
+                try {
+                    const expenses_response = await requests.onGet(`expenses/${report.start_date}/${report.end_date}`);
+                    setExpenses(expenses_response);
+                } catch (error) {
+                    console.log("Erro despesas:", error);
+                }
+            }
+
+        } catch (error) {
+            console.log("Erro principal:", error);
+        }
+        finally {
+            setLoading(false);
+        }
     }
 
     useEffect(() => {
-        onGetData().then();
-    },[]);
+        onGetData();
+    }, []);
+
+    if (loading || !information) {
+        return <div className="flex h-full w-full items-center justify-center">Carregando relatório...</div>;
+    }
 
     return (
-
-        <div className={"h-full w-full"}>
-            <PDFViewer style={tw("h-[100%] w-[100%]")} >
-                <InvoicePDF revenues={revenues} expenses={expenses} information={information}/>
+        <div className="h-full w-full">
+            {console.log(information.branch?.owner)}
+            <PDFViewer style={tw("h-[100%] w-[100%]")}>
+                <InvoicePDF revenues={revenues} expenses={expenses} information={information} />
             </PDFViewer>
         </div>
-
     );
 }

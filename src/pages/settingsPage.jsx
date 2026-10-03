@@ -3,7 +3,10 @@ import Menu from "../components/menu.jsx";
 import {User, Church, MapPinHouse, ListCheck} from "lucide-react";
 import {useState, useEffect} from "react";
 import MainRequests from "../services/requests.js";
-import {Page1, Page2, Page3, Page4} from "../components/settingPages.jsx";
+import UsersPage from "../components/subpages/settingsUsersPage.jsx";
+import SectorsPage from "../components/subpages/settingsSectorsPage.jsx";
+import BranchesPage from "../components/subpages/settingsBranchesPage.jsx";
+import PermissionsPage from "../components/subpages/settingsPermissionsPage.jsx";
 import {MenuProvider} from "../context/menuContext.jsx";
 import SideMenu from "../components/sideMenu.jsx";
 
@@ -18,22 +21,22 @@ function SettingsPage() {
     const pages = {
         users: {
             title: "Usuários",
-            component: <Page1 />,
+            component: <UsersPage />,
             icon: <User size={14}/>
         },
         branches: {
-            title: "Usuários",
-            component: <Page2 />,
+            title: "Filiais",
+            component: <BranchesPage />,
             icon: <Church size={14}/>
         },
         sectors: {
             title: "Setores",
-            component: <Page3 />,
+            component: <SectorsPage />,
             icon: <MapPinHouse size={14}/>
         },
         permissions:{
             title: "Permissões",
-            component: <Page4 />,
+            component: <PermissionsPage />,
             icon: <ListCheck size={14}/>
         }
     }

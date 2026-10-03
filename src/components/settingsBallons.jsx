@@ -82,3 +82,139 @@ export function RolesBallons({role, number_of_pages, deleteRoleAndPermissions}) 
         </article>
     )
 }
+
+import { Building2, MapPin, User, Layers, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+
+// ─── BranchBallon ──────────────────────────────────────────────────────────────
+// Props:
+//   branch        { id, name, owner, sector_name, institution_name }
+//   memberCount   número de membros (opcional)
+//   onDelete      () => void
+
+export function BranchBallon({ branch, memberCount, onDelete }) {
+    return (
+        <article className="grid grid-flow-col grid-rows-[auto_1fr] w-full gap-3 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-xl p-5">
+            {/* cabeçalho */}
+            <div className="w-full flex items-center justify-start gap-3">
+                <section>
+                    <span className="h-fit bg-black text-primary-titles-color rounded-2xl px-2 py-1 text-sm font-bold">
+                        {branch.name?.slice(0, 2).toUpperCase() ?? "BR"}
+                    </span>
+                </section>
+                <section className="space-y-0.5 text-left">
+                    <h2 className="font-semibold">{branch.name}</h2>
+                    <p className="text-xs text-neutral-500">{branch.institution_name}</p>
+                </section>
+            </div>
+
+            {/* detalhes */}
+            <div className="w-full flex flex-col items-start justify-start gap-2">
+                <ul className="space-y-2 w-full">
+                    <li className="flex items-center gap-2">
+                        <User className="text-neutral-400" size={15} />
+                        <p className="text-sm">{branch.owner ?? "—"}</p>
+                    </li>
+                    <li className="flex items-center gap-2">
+                        <Layers className="text-neutral-400" size={15} />
+                        <p className="text-sm">{branch.sector_name ?? "—"}</p>
+                    </li>
+                    {memberCount !== undefined && (
+                        <li className="flex items-center gap-2">
+                            <Building2 className="text-neutral-400" size={15} />
+                            <p className="text-sm">{memberCount} membro{memberCount !== 1 ? "s" : ""}</p>
+                        </li>
+                    )}
+                </ul>
+            </div>
+
+            {/* ações */}
+            <div className="w-full h-full flex items-start justify-end">
+                <section className="hover:bg-gray-200 px-3 py-3 rounded-2xl">
+                    <button onClick={onDelete} aria-label="Excluir filial">
+                        <Trash2 color="red" size={16} />
+                    </button>
+                </section>
+            </div>
+        </article>
+    );
+}
+
+// ─── SectorBallon ─────────────────────────────────────────────────────────────
+// Props:
+//   sector        { id, name, sectorial_cordenator, vice_sectorial_cordenator, institution_name }
+//   branches      [{ id, name }]  — lista de filiais do setor (opcional)
+//   onDelete      () => void
+
+export function SectorBallon({ sector, branches = [], onDelete }) {
+    const [expanded, setExpanded] = useState(false);
+
+    return (
+        <article className="grid grid-flow-col grid-rows-[auto_1fr] w-full gap-3 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-xl p-5">
+            {/* cabeçalho */}
+            <div className="w-full flex items-center justify-start gap-3">
+                <section>
+                    <span className="h-fit bg-black text-primary-titles-color rounded-2xl px-2 py-1 text-sm font-bold">
+                        {sector.name?.slice(0, 2).toUpperCase() ?? "SE"}
+                    </span>
+                </section>
+                <section className="space-y-0.5 text-left">
+                    <h2 className="font-semibold">{sector.name}</h2>
+                    <p className="text-xs text-neutral-500">{sector.institution_name}</p>
+                </section>
+            </div>
+
+            {/* detalhes */}
+            <div className="w-full flex flex-col items-start gap-2">
+                <ul className="space-y-2 w-full">
+                    <li className="flex items-center gap-2">
+                        <User className="text-neutral-400" size={15} />
+                        <p className="text-sm">{sector.sectorial_cordenator ?? "—"}</p>
+                    </li>
+                    {sector.vice_sectorial_cordenator && (
+                        <li className="flex items-center gap-2">
+                            <User className="text-neutral-400" size={15} />
+                            <p className="text-sm text-neutral-500">{sector.vice_sectorial_cordenator}</p>
+                        </li>
+                    )}
+                    <li className="flex items-center gap-2">
+                        <Building2 className="text-neutral-400" size={15} />
+                        <p className="text-sm">
+                            {branches.length} filial{branches.length !== 1 ? "is" : ""}
+                        </p>
+                        {branches.length > 0 && (
+                            <button
+                                onClick={() => setExpanded(v => !v)}
+                                className="ml-auto flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-800"
+                                aria-label={expanded ? "Recolher filiais" : "Ver filiais"}
+                            >
+                                {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                                {expanded ? "Recolher" : "Ver filiais"}
+                            </button>
+                        )}
+                    </li>
+                </ul>
+
+                {/* lista expandida de filiais */}
+                {expanded && branches.length > 0 && (
+                    <ul className="w-full mt-1 space-y-1 border-t border-bg-secondary-destack-color pt-2">
+                        {branches.map(b => (
+                            <li key={b.id} className="flex items-center gap-2 text-xs text-neutral-600">
+                                <MapPin size={12} className="text-neutral-400" />
+                                {b.name}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+
+            {/* ações */}
+            <div className="w-full h-full flex items-start justify-end">
+                <section className="hover:bg-gray-200 px-3 py-3 rounded-2xl">
+                    <button onClick={onDelete} aria-label="Excluir setor">
+                        <Trash2 color="red" size={16} />
+                    </button>
+                </section>
+            </div>
+        </article>
+    );
+}
