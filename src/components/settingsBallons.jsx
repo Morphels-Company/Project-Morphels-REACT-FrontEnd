@@ -1,4 +1,4 @@
-import {Calendar, Mail, Phone, Shield, Trash2} from "lucide-react";
+import {Calendar, Mail, Phone, Shield, Trash2, Building2, MapPin, User, Layers, ChevronDown, ChevronUp } from "lucide-react";
 import {useState, useEffect} from "react";
 import MainRequests from "../services/requests.js";
 
@@ -82,8 +82,6 @@ export function RolesBallons({role, number_of_pages, deleteRoleAndPermissions}) 
         </article>
     )
 }
-
-import { Building2, MapPin, User, Layers, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 
 // ─── BranchBallon ──────────────────────────────────────────────────────────────
 // Props:
