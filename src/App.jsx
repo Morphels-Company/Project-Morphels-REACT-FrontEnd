@@ -1,6 +1,5 @@
 import './App.css'
-import{ Church, Mail, Lock } from "lucide-react"
-import SearchBar from './components/searchBar.jsx';
+import{ Church } from "lucide-react"
 import Inputs from "./components/inputs.jsx";
 import { useNavigate } from 'react-router-dom';
 import MainRequests from "../src/services/requests.js";
@@ -39,7 +38,7 @@ function App() {
           <section className='flex flex-col items-start w-full gap-3'>
               <Inputs id="email" type="email" placeholder="jonas@gmail..." children="Email"
                       register={{...register("loginEmail")}}></Inputs>
-              <Inputs id="password" type="text" placeholder="123..." children="Senha"
+              <Inputs id="password" type="password" placeholder="123..." children="Senha"
                       register={{...register("loginPassword")}}></Inputs>
           </section>
           <section className='flex flex-col w-full'>
