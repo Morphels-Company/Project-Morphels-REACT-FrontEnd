@@ -7,8 +7,7 @@ import {
     Search,
     Trash2,
     ScanBarcode,
-    Plus,
-    ArrowDownToLine, Loader2
+    Loader2
 } from "lucide-react";
 import Header2 from "./header2.jsx";
 import OpenFromButton from "./openFromButton.jsx";
@@ -60,7 +59,7 @@ export function Page1(){
 
     async function onDeleteMember(id){
         try{
-            const deleted_member = await requests.onDelete("members", id);
+            await requests.onDelete("members", id);
 
             onGetMembers(searchMembers).then()
         }catch(error){
@@ -249,7 +248,7 @@ export function Page2(){
 
     async function onDeleteCompany(id){
         try{
-            const deleted_company = await requests.onDelete("companies", id)
+            await requests.onDelete("companies", id)
 
             onGetCompanies().then()
         }catch(error){
@@ -642,7 +641,7 @@ export function Page3() {
                                             Member
                                         </label>
                                         <input
-                                            className="w-full text-xs bg-bg-secondary-color border border-bg-secondary-destack-color rounded-md hover:cursor-auto focus:border-gray-400 focus:outline-none placeholder:text-gray-500 transition-all px-2 py-2"
+                                            className="w-full text-xs bg-bg-secondary-color border border-bg-secondary-destack-color rounded-md hover:cursor-auto focus:outline-none placeholder:text-gray-500 transition-all px-2 py-2"
                                             placeholder="Member" type="text" id="member"
                                             {...register("member")} />
                                         {showOptions && filted.length !== 0 && <div

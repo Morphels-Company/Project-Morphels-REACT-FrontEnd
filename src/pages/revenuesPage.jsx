@@ -13,7 +13,6 @@ import { MenuProvider } from "../context/menuContext.jsx";
 import {useForm} from "react-hook-form";
 import MainRequests from "../services/requests.js";
 import Inputs from "../components/inputs.jsx";
-import NumericInputs from "../components/numericInputs.jsx";
 import { Loader2 } from "lucide-react";
 
 const requests = new MainRequests()
@@ -183,7 +182,7 @@ function RevenuesPage() {
                                             Member
                                         </label>
                                         <input
-                                            className="w-full text-xs bg-bg-secondary-color border rounded-md border-bg-secondary-destack-color hover:cursor-auto focus:border-primary-titles-color  focus:outline-none placeholder:text-gray-500 transition-all px-2 py-2"
+                                            className="w-full text-xs bg-bg-secondary-color border rounded-md border-bg-secondary-destack-color hover:cursor-auto  focus:outline-none placeholder:text-gray-500 transition-all px-2 py-2"
                                             placeholder="Member" type="text" id="member"
                                             {...register("member")} />
                                         {showOptions && filted.length !== 0 && <div

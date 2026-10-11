@@ -6,10 +6,6 @@ import { useForm } from "react-hook-form";
 import Inputs from "../inputs.jsx";
 import Header2 from "../header2.jsx";
 import Select from "../select.jsx";
-import {MenuProvider} from "../../context/menuContext.jsx";
-import Header from "../header.jsx";
-import SideMenu from "../sideMenu.jsx";
-import Menu from "../menu.jsx";
 
 const request = new MainRequests();
 

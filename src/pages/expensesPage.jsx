@@ -5,7 +5,6 @@ import Header2 from "../components/header2.jsx";
 import OpenFromButton from "../components/openFromButton.jsx";
 import DataBalons from "../components/dadaBalons.jsx";
 import SearchArea from "../components/searchArea.jsx";
-import SearchBar from "../components/searchBar.jsx";
 import { useForm } from "react-hook-form";
 import ModalExpenses from "../components/modalExpences.jsx";
 import Filt from "../components/filt.jsx";

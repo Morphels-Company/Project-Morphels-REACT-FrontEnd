@@ -8,7 +8,6 @@ import MainRequests from "../services/requests.js";
 const requests = new MainRequests();
 function SideMenu() {
     const navigate = useNavigate()
-    const [show, setShow] = useState(false);
     const { isOpen, toggleMenu } = useMenu();
     const [pagesPermissions, setPagesPermissions] = useState([]);
 
