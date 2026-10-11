@@ -1,5 +1,5 @@
 import {ChartColumn, BadgeDollarSign, Receipt, FileText, Settings, Users} from 'lucide-react';
-import MenuButtons from './menuButtons.jsx';
+import { MenuButtonsPrimaryBar } from './menuButtons.jsx';
 import {useNavigate} from 'react-router-dom';
 import {useState, useEffect} from 'react';
 import MainRequests from "../services/requests.js";
@@ -72,9 +72,9 @@ function Menu() {
                         if (page.can_view === true && presetPages[page.page_name] !== undefined) {
                             return (
                                 <li key={page.page_name} className='w-full'>
-                                    <MenuButtons to={presetPages[page.page_name]?.path} onClick={() => navigate(presetPages[page.page_name]?.path)}>
+                                    <MenuButtonsPrimaryBar to={presetPages[page.page_name]?.path} onClick={() => navigate(presetPages[page.page_name]?.path)}>
                                         {presetPages[page.page_name]?.icon} {presetPages[page.page_name]?.title}
-                                    </MenuButtons>
+                                    </MenuButtonsPrimaryBar>
                                 </li>
                             )
                         }

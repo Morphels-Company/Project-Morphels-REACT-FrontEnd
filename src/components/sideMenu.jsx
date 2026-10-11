@@ -1,5 +1,5 @@
 import { ChartColumn, BadgeDollarSign, Receipt, FileText, Settings, Users, X } from 'lucide-react';
-import MenuButtons from './menuButtons.jsx';
+import { MenuButtonsSideBar } from './menuButtons.jsx';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useMenu } from "../context/menuContext.jsx";
@@ -66,36 +66,41 @@ function SideMenu() {
         getPermission().then()
     }, [])
     return (
-        <>
-            {isOpen && (
-                <div className="fixed inset-0 bg-[rgb(0,0,0,0.7)] bg-opacity-50 flex items-start justify-start mobile-only-block">
-                    <div className="flex flex-col bg-bg-primary-color w-[70%] h-full rounded-lg shadow-lg space-y-4">
-                        <section className="flex w-full items-center justify-between my-3 px-3">
-                            <h2 className='text-2xl pl-3'>Menu de páginas</h2>
-                            <button className="p-1 hover:bg-bg-secondary-destack-color text-primary-titles-color items-center rounded-2xl" onClick={toggleMenu}>
-                                <X/>
-                            </button>
-                        </section>
-                        <ul className='w-full flex flex-col items-center'>
-                            {pagesPermissions.map((page) => {
-                                    if (page.can_view === true && presetPages[page.page_name] !== undefined) {
-                                        return (
-                                            <li key={page.page_name} className='w-full'>
-                                                <MenuButtons to={presetPages[page.page_name]?.path} onClick={() => navigate(presetPages[page.page_name]?.path)}>
-                                                    {presetPages[page.page_name]?.icon} {presetPages[page.page_name]?.title}
-                                                </MenuButtons>
-                                            </li>
-                                        )
-                                    }
-                                }
-                            )}
-                        </ul>
-                    </div>
-                </div>
-            )}
-
-        </>
-
+        <div
+            className={`fixed inset-0 z-50 bg-black/70 flex items-start justify-start mobile-only-block transition-opacity duration-300 ${
+                isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
+        >
+            <div
+                className={`flex flex-col bg-bg-primary-color w-85 h-full rounded-lg shadow-lg space-y-4 transform transition-transform duration-300 ease-in-out ${
+                    isOpen ? "translate-x-0" : "-translate-x-full"
+                }`}
+            >
+                <section className="flex w-full items-center justify-between my-3 px-3">
+                    <h2 className='text-2xl pl-3'>Menu de páginas</h2>
+                    <button
+                        className="p-1 hover:bg-bg-secondary-destack-color text-primary-titles-color items-center rounded-2xl"
+                        onClick={toggleMenu}
+                    >
+                        <X/>
+                    </button>
+                </section>
+                <ul className='w-full flex flex-col items-center'>
+                    {pagesPermissions.map((page) => {
+                            if (page.can_view === true && presetPages[page.page_name] !== undefined) {
+                                return (
+                                    <li key={page.page_name} className='w-full'>
+                                        <MenuButtonsSideBar to={presetPages[page.page_name]?.path} onClick={() => navigate(presetPages[page.page_name]?.path)}>
+                                            {presetPages[page.page_name]?.icon} {presetPages[page.page_name]?.title}
+                                        </MenuButtonsSideBar>
+                                    </li>
+                                )
+                            }
+                        }
+                    )}
+                </ul>
+            </div>
+        </div>
     )
 }
 export default SideMenu;

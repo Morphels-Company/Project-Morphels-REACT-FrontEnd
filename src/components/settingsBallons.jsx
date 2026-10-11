@@ -95,7 +95,7 @@ export function BranchBallon({ branch, memberCount, onDelete }) {
             {/* cabeçalho */}
             <div className="w-full flex items-center justify-start gap-3">
                 <section>
-                    <span className="h-fit bg-black text-primary-titles-color rounded-2xl px-2 py-1 text-sm font-bold">
+                    <span className="h-fit bg-black text-secondary-titles-color rounded-2xl px-2 py-1 text-sm font-bold">
                         {branch.name?.slice(0, 2).toUpperCase() ?? "BR"}
                     </span>
                 </section>
@@ -151,7 +151,7 @@ export function SectorBallon({ sector, branches = [], onDelete }) {
             {/* cabeçalho */}
             <div className="w-full flex items-center justify-start gap-3">
                 <section>
-                    <span className="h-fit bg-black text-primary-titles-color rounded-2xl px-2 py-1 text-sm font-bold">
+                    <span className="h-fit bg-black text-secondary-titles-color rounded-2xl px-2 py-1 text-sm font-bold">
                         {sector.name?.slice(0, 2).toUpperCase() ?? "SE"}
                     </span>
                 </section>

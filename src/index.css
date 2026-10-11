@@ -9,7 +9,7 @@
 .mobile-only-flex { display: none; }
 .mobile-only-block { display: none; }
 
-@media (max-width: 768px) {
+@media (max-width: 1080px) {
     .desktop-only-flex { display: none; }
     .mobile-only-flex { display: flex; }
     .mobile-only-block { display: block; }

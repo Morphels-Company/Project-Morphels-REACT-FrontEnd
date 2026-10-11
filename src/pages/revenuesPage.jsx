@@ -14,6 +14,7 @@ import {useForm} from "react-hook-form";
 import MainRequests from "../services/requests.js";
 import Inputs from "../components/inputs.jsx";
 import NumericInputs from "../components/numericInputs.jsx";
+import { Loader2 } from "lucide-react";
 
 const requests = new MainRequests()
 
@@ -109,6 +110,22 @@ function RevenuesPage() {
         setShowOptions(false);
     }
 
+    if(revenues.length === 0){
+        return (
+            <div className="justify-center h-screen w-full">
+                <MenuProvider>
+                    <Header/>
+                    <SideMenu/>
+                </MenuProvider>
+                <Menu/>
+
+                <div className="w-full h-[80%] flex flex-col justify-center items-center space-x-3">
+                    <Loader2 className="animate-spin w-40 h-40"/>
+                    <h2>Carregando...</h2>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="justify-center h-screen w-full">

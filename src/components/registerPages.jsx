@@ -8,7 +8,7 @@ import {
     Trash2,
     ScanBarcode,
     Plus,
-    ArrowDownToLine
+    ArrowDownToLine, Loader2
 } from "lucide-react";
 import Header2 from "./header2.jsx";
 import OpenFromButton from "./openFromButton.jsx";
@@ -197,6 +197,15 @@ export function Page1(){
                                     </tr>
                                 );
                             })}
+
+                            {members.length === 0 ??
+                                <div className="justify-center h-screen w-full">
+                                    <div className="w-full h-[20%] flex flex-col justify-center items-center space-x-3">
+                                        <Loader2 className="animate-spin w-40 h-40"/>
+                                        <h2>Carregando...</h2>
+                                    </div>
+                                </div>
+                            }
 
                             </tbody>
                         </table>
@@ -521,6 +530,14 @@ export function Page2(){
                                 </div>
                             </td>
                         </tr>))}
+                        {companies.length === 0 ??
+                            <div className="justify-center h-screen w-full">
+                                <div className="w-full h-[20%] flex flex-col justify-center items-center space-x-3">
+                                    <Loader2 className="animate-spin w-40 h-40"/>
+                                    <h2>Carregando...</h2>
+                                </div>
+                            </div>
+                        }
 
                         </tbody>
                     </table>
@@ -688,7 +705,7 @@ export function Page3() {
                                    onChange={(e) => setSearchCards(e.target.value)}/>
                     </section>
                     <section className="w-full rounded-lg border border-bg-secondary-destack-color overflow-auto">
-                        <table className="w-full min-w-[800px]">
+                        <table className="w-full min-w-200">
                             <thead className="">
                             <tr className="h-10 text-xs text-left border-b border-b-bg-secondary-destack-color">
                                 <th className="px-2">Member</th>
@@ -741,6 +758,15 @@ export function Page3() {
                                     </tr>
                                 );
                             })}
+
+                            {cards.length === 0 ??
+                                <div className="justify-center h-screen w-full">
+                                    <div className="w-full h-[20%] flex flex-col justify-center items-center space-x-3">
+                                        <Loader2 className="animate-spin w-40 h-40"/>
+                                        <h2>Carregando...</h2>
+                                    </div>
+                                </div>
+                            }
 
                             </tbody>
                         </table>

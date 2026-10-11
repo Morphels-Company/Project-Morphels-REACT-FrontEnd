@@ -1,12 +1,16 @@
 import {RolesBallons, UserBallons} from '../settingsBallons.jsx'
 import {useEffect, useState} from "react";
 import MainRequests from "../../services/requests.js";
-import {Plus, ScanBarcode} from "lucide-react";
+import {Loader2, Plus, ScanBarcode} from "lucide-react";
 import Inputs from "../inputs.jsx";
 import { useForm,useFieldArray, Controller } from "react-hook-form"
 import Header2 from "../header2.jsx";
 import {FormateDate} from "../../services/formateDateService.js";
 import Select from "../select.jsx";
+import {MenuProvider} from "../../context/menuContext.jsx";
+import Header from "../header.jsx";
+import SideMenu from "../sideMenu.jsx";
+import Menu from "../menu.jsx";
 
 const request = new MainRequests()
 
@@ -126,6 +130,14 @@ export default function UsersPage(){
                     </div>
                 )}
             </div>
+            {users.length === 0 &&
+                <div className="justify-center h-screen w-full">
+                    <div className="w-full h-[20%] flex flex-col justify-center items-center space-x-3">
+                        <Loader2 className="animate-spin w-40 h-40"/>
+                        <h2>Carregando...</h2>
+                    </div>
+                </div>
+            }
             <div className={'grid grid-cols-1 gap-2 w-[80vw] md:w-[55vw] lg:grid-cols-2 xl:grid-cols-3'}>
                 {users.map((user) => (
                     <UserBallons

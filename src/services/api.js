@@ -11,10 +11,12 @@ const api = axios.create({
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        console.log(typeof(error.response.status));
-        if (error.response && error.response.status === 401) {
+        console.log(typeof (error.response.status));
+        if (error.response && error.response.status >= 300 && error.response.status <= 399 ) {
+            openPermissionModal(error.response.data?.message || "Não autorizado", error.response.status, ".")
+        }else if (error.response && error.response.status >= 400 && error.response.status <= 499) {
             openPermissionModal(error.response.data?.message || "Não autorizado", error.response.status, "/")
-        }else if (error.response && (error.response.status !== 200 || 201 || 203)) {
+        }else if (error.response && error.response.status >= 500 && error.response.status <= 599) {
             openPermissionModal(error.response.data?.message || "Não autorizado", error.response.status, ".");
         }
         return Promise.reject(error);

@@ -14,6 +14,7 @@ import {MenuProvider} from "../context/menuContext.jsx";
 import SideMenu from "../components/sideMenu.jsx";
 import Select from "../components/select.jsx";
 import Inputs from "../components/inputs.jsx";
+import {Loader2} from "lucide-react";
 
 const requests = new MainRequests()
 
@@ -87,8 +88,24 @@ function ExpensesPage() {
         console.log(type)
         onFilterExpenses().then(); //
     },[type, start_date, end_date]);
- 
 
+
+    if(expenses.length === 0){
+        return (
+            <div className="justify-center h-screen w-full">
+                <MenuProvider>
+                    <Header/>
+                    <SideMenu/>
+                </MenuProvider>
+                <Menu/>
+
+                <div className="w-full h-[80%] flex flex-col justify-center items-center space-x-3">
+                    <Loader2 className="animate-spin w-40 h-40"/>
+                    <h2>Carregando...</h2>
+                </div>
+            </div>
+        )
+    }
   return (
     <div className="justify-center h-[90vh] w-screen">
         <MenuProvider>
