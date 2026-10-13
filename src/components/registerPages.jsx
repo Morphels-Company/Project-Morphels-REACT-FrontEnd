@@ -27,8 +27,9 @@ export function Page1(){
     const [showMemberForm, setShowMemberForm] = useState(false)
     const [searchMembers, setSearchMembers] = useState("")
     const [branches, setBranches] = useState([])
+    const [isLoading, setIsLoading] = useState(true);
 
-    const {register, handleSubmit} = useForm({
+    const {register, handleSubmit, watch} = useForm({
         defaultValues: {
             name: "",
             cellphone: null,
@@ -49,6 +50,8 @@ export function Page1(){
             setBranches(response_branches ? response_branches : []);
         }catch(error){
             console.log(error);
+        }finally {
+            setIsLoading(false);
         }
 
     }
@@ -67,6 +70,9 @@ export function Page1(){
         }
     }
 
+    const searchBarTerm = watch("search_bar");
+
+    const filteredMembers = searchBarTerm ? members.filter(member => member.name.toLowerCase().includes(searchBarTerm.toLowerCase())) : members;
 
     return(
         <main>
@@ -83,59 +89,62 @@ export function Page1(){
                                 onClick={() => setShowMemberForm(!showMemberForm)}>{showMemberForm ? "Cancelar" : "Novo Membro"}</OpenFromButton>
                         </div>
                     </section>
-                    {showMemberForm && (
-                        <div className="">
-                            <form action={() => handleSubmit(async (data) => {
-                                await requests.onPost("members", data)
-                                onGetMembers(searchMembers).then()
-                            })()}
-                                  className="flex flex-col  space-y-3">
-                                <section className="flex flex-col items-start space-y-1">
-                                    <Inputs id="name" type="text" placeholder={'Ex: João...'}
-                                            register={{...register("name")}}>Nome *</Inputs>
-                                </section>
 
-                                <section className="flex flex-row gap-4 w-full">
-                                    <Inputs id="cellphone" type="text" placeholder={'(61) 91234-5678'}
-                                            register={{...register("cellphone")}}>Telefone *</Inputs>
-                                    <Inputs id="dateBorn" type="date" register={{...register("date_birth")}}>Date
-                                        of Birth</Inputs>
-                                </section>
-                                <section className="flex flex-row gap-4 w-full">
-                                    <Inputs id="pixKey" type="text" placeholder={'Write the Pix key.'}
-                                            register={{...register("pixkey")}}>Chave PIX</Inputs>
-                                    <Select id={"pixtype"} register={{...register("pixtype")}} title={"Tipo de chave"} options={[
-                                        {index:"", title:'Tipo de chave'},
-                                        {index:"cpf", title:'CPF'},
-                                        {index:"cnpj", title:'CNPJ'},
-                                        {index:"email", title:'E-mail'},
-                                        {index:"cellphone", title:'CPF'},
-                                        {index:"aleatory_key", title:'Chave aleatória'},
-                                    ]} />
+                        <div className={`grid transition-all duration-300 ease-in-out ${
+                            showMemberForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                        }`}>
+                            <div className="overflow-hidden">
+                                <form action={() => handleSubmit(async (data) => {
+                                    await requests.onPost("members", data)
+                                    onGetMembers(searchMembers).then()
+                                })()}
+                                      className="flex flex-col  space-y-3">
+                                    <section className="flex flex-col items-start space-y-1">
+                                        <Inputs id="name" type="text" placeholder={'Ex: João...'}
+                                                register={{...register("name")}}>Nome *</Inputs>
+                                    </section>
 
-                                </section>
-                                <section className="flex flex-row gap-4 w-full">
-                                    <Select id={"branch"} register={{...register("branch")}} title={"Filial"} options={[
-                                        {index:"", title: "Selecione uma opção"},
-                                        ...branches.map(branch => ({
-                                            index: branch.id,
-                                            // Fique de olho: no Postgres você chamou de 'nome', verifique se o JSON da API traz 'nome' ou 'name'
-                                            title: branch.name
-                                        }))
-                                    ]} />
-                                </section>
+                                    <section className="flex flex-row gap-4 w-full">
+                                        <Inputs id="cellphone" type="text" placeholder={'(61) 91234-5678'}
+                                                register={{...register("cellphone")}}>Telefone *</Inputs>
+                                        <Inputs id="dateBorn" type="date" register={{...register("date_birth")}}>Date
+                                            of Birth</Inputs>
+                                    </section>
+                                    <section className="flex flex-row gap-4 w-full">
+                                        <Inputs id="pixKey" type="text" placeholder={'Write the Pix key.'}
+                                                register={{...register("pixkey")}}>Chave PIX</Inputs>
+                                        <Select id={"pixtype"} register={{...register("pixtype")}} title={"Tipo de chave"} options={[
+                                            {index:"", title:'Tipo de chave'},
+                                            {index:"cpf", title:'CPF'},
+                                            {index:"cnpj", title:'CNPJ'},
+                                            {index:"email", title:'E-mail'},
+                                            {index:"cellphone", title:'CPF'},
+                                            {index:"aleatory_key", title:'Chave aleatória'},
+                                        ]} />
 
-                                <div className="w-full flex flex-row mt-4 gap-4 ">
-                                    <button type="submit"
-                                            className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit
-                                    </button>
-                                    <button onClick={() => setShowMemberForm(false)}
-                                            className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel
-                                    </button>
-                                </div>
-                            </form>
+                                    </section>
+                                    <section className="flex flex-row gap-4 w-full">
+                                        <Select id={"branch"} register={{...register("branch")}} title={"Filial"} options={[
+                                            {index:"", title: "Selecione uma opção"},
+                                            ...branches.map(branch => ({
+                                                index: branch.id,
+                                                // Fique de olho: no Postgres você chamou de 'nome', verifique se o JSON da API traz 'nome' ou 'name'
+                                                title: branch.name
+                                            }))
+                                        ]} />
+                                    </section>
+
+                                    <div className="w-full flex flex-row mt-4 gap-4 ">
+                                        <button type="submit"
+                                                className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit
+                                        </button>
+                                        <button onClick={() => setShowMemberForm(false)}
+                                                className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    )}
                 </div>
             </div>
             <div className="flex justify-center">
@@ -143,8 +152,8 @@ export function Page1(){
                     className="flex flex-col justify-center mt-7 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[80vw] md:w-[55vw]">
                     <Header2 title={"Cadastro de Membros"} description={""}/>
                     <section className="flex items-center gap-2">
-                        <Search size={16} className="text-gray-500"/>
-                        <SearchBar placeholder="Member" type="text" id="member" value={searchMembers} onChange={(e) => setSearchMembers(e.target.value)} />
+                        <Inputs id="search_bar" type="text" placeholder="Busque pelo nome do membro"
+                                register={{...register("search_bar")}} />
                     </section>
                     <section className="w-full rounded-lg border border-bg-secondary-destack-color overflow-auto">
                         <table className="w-full min-w-200">
@@ -159,55 +168,58 @@ export function Page1(){
                             </tr>
                             </thead>
                             <tbody>
-                            {members.map((member) => {
-                                const dataObj = new Date(member.date_birth);
+                            {filteredMembers.length === 0 ? (
+                               <p></p>
+                            ) : (
+                                filteredMembers.map((member) => {
+                                        const dataObj = new Date(member.date_birth);
 
-                                const formatedData = dataObj.toLocaleDateString("pt-BR", {
-                                    timeZone: "UTC",
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                });
+                                        const formatedData = dataObj.toLocaleDateString("pt-BR", {
+                                            timeZone: "UTC",
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric",
+                                        });
 
-                                return (
-                                    <tr className="h-11 text-xs text-left border-b border-bg-secondary-destack-color hover:bg-bg-secondary-destack-color" key={member.id}>
-                                        <td className="p-2">{member.name}</td>
-                                        <td>{member.cellphone}</td>
-                                        <td className="flex flex-col gap-1 py-1">
-                                            <section
-                                                className="bold">{parseInt(new Date().getFullYear()) - parseInt(formatedData.substring(6, 10))} anos
-                                            </section>
-                                            <section className=" text-gray-500">{formatedData}</section>
-                                        </td>
-                                        <td>
-                                            <div
-                                                className="inline-block border border-neutral-200 px-1 rounded-md">{member.pixtype}</div>
-                                        </td>
-                                        <td>{member.pixkey}</td>
+                                        return (
+                                            <tr className="h-11 text-xs text-left border-b border-bg-secondary-destack-color hover:bg-bg-secondary-destack-color" key={member.id}>
+                                                <td className="p-2">{member.name}</td>
+                                                <td>{member.cellphone}</td>
+                                                <td className="flex flex-col gap-1 py-1">
+                                                    <section
+                                                        className="bold">{parseInt(new Date().getFullYear()) - parseInt(formatedData.substring(6, 10))} anos
+                                                    </section>
+                                                    <section className=" text-gray-500">{formatedData}</section>
+                                                </td>
+                                                <td>
+                                                    <div
+                                                        className="inline-block border border-neutral-200 px-1 rounded-md">{member.pixtype}</div>
+                                                </td>
+                                                <td>{member.pixkey}</td>
 
-                                        <td>
-                                            <div className="pr-3 flex justify-end  items-center gap-2">
+                                                <td>
+                                                    <div className="pr-3 flex justify-end  items-center gap-2">
 
-                                                <button onClick={() => onDeleteMember(member.id)} className="text-red-600 hover:bg-bg-secondary-destack-color p-1 rounded-md">
-                                                    <Trash2 size={18}/>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-
-                            {members.length === 0 ??
-                                <div className="justify-center h-screen w-full">
-                                    <div className="w-full h-[20%] flex flex-col justify-center items-center space-x-3">
-                                        <Loader2 className="animate-spin w-40 h-40"/>
-                                        <h2>Carregando...</h2>
-                                    </div>
+                                                        <button onClick={() => onDeleteMember(member.id)} className="text-red-600 hover:bg-bg-secondary-destack-color p-1 rounded-md">
+                                                            <Trash2 size={18}/>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    }))}
+                            </tbody>
+                            </table>
+                            {isLoading &&
+                                <div className="justify-center w-full">
+                                <div className="flex flex-col justify-center items-center space-x-3">
+                                <Loader2 className="animate-spin w-20 h-20"/>
+                                <h2>Carregando...</h2>
                                 </div>
+                                </div>
+
                             }
 
-                            </tbody>
-                        </table>
                     </section>
                 </div>
 
@@ -270,191 +282,194 @@ export function Page2(){
                             onClick={() => setShowCompaniesForm(!showCompaniesForm)}>{showCompaniesForm ? "Cancelar" : "Nova Empresa"}</OpenFromButton>
                     </div>
                 </section>
-                {showCompaniesForm && (
-                    <div className="mt-4">
 
-                        <form action={() => handleSubmit(async (data) => {
-                            await requests.onPost("companies", data)
-                            onGetCompanies().then()
-                        })()}
-                              className="flex flex-col  space-y-3">
-                            <article className="space-y-3">
-                                <section className="flex gap-2 items-center mb-4">
-                                    <Building2 size={21}/>
-                                    <h2 className="text-sm font-bold">Empress's Data</h2>
-                                </section>
-                                <section className="flex flex-row gap-4 w-full items-end">
-                                    <Inputs id="cnpj" type="text" placeholder={'00.000.000/0000-00'}
-                                            register={{...register("cnpj")}}>CNPJ *</Inputs>
-                                    <div className="flex flex-col items-start w-[30%] space-y-2">
-                                        <button
-                                            className="w-full justify-center gap-3 flex flex-row text-xs text-secondary-titles-color bg-buttons-color hover:bg-buttons-hover border rounded-md border-bg-secondary-destack-color px-2 py-2">
-                                            <Search size={16}/>
-                                            <div>Buscar CNPJ</div>
-                                        </button>
-                                    </div>
-                                </section>
+                    <div className={`grid transition-all duration-300 ease-in-out ${
+                        showCompaniesForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                    }`}>
+                        <div className="overflow-hidden">
 
-                                <section className="flex flex-row gap-4 w-full">
-                                    <Inputs id="companyName" type="text" placeholder={'Empresa ABC LTDA'}
-                                            register={{...register("company_name")}}>Nome da Compania*</Inputs>
-                                    <Inputs id="fantasyName" type="text" placeholder={'ABC Empresa'}
-                                            register={{...register("fantasy_name")}}>Nome Fantasia</Inputs>
+                            <form action={() => handleSubmit(async (data) => {
+                                await requests.onPost("companies", data)
+                                onGetCompanies().then()
+                            })()}
+                                  className="flex flex-col  space-y-3">
+                                <article className="space-y-3">
+                                    <section className="flex gap-2 items-center mb-4">
+                                        <Building2 size={21}/>
+                                        <h2 className="text-sm font-bold">Empress's Data</h2>
+                                    </section>
+                                    <section className="flex flex-row gap-4 w-full items-end">
+                                        <Inputs id="cnpj" type="text" placeholder={'00.000.000/0000-00'}
+                                                register={{...register("cnpj")}}>CNPJ *</Inputs>
+                                        <div className="flex flex-col items-start w-[30%] space-y-2">
+                                            <button
+                                                className="w-full justify-center gap-3 flex flex-row text-xs text-secondary-titles-color bg-buttons-color hover:bg-buttons-hover border rounded-md border-bg-secondary-destack-color px-2 py-2">
+                                                <Search size={16}/>
+                                                <div>Buscar CNPJ</div>
+                                            </button>
+                                        </div>
+                                    </section>
 
-                                </section>
-                                <section className="flex flex-row gap-4 w-full">
-                                    <Inputs id="inscricaoEstadual" type="text" placeholder={'000000-0'}
-                                            register={{...register("estate_registration")}}>Inscrição
-                                        Estadual</Inputs>
-                                    <Inputs id="inscricaoMunicipal" type="text" placeholder={'000000-0'}
-                                            register={{...register("municipal_registration")}}>Inscrição
-                                        Municipal</Inputs>
+                                    <section className="flex flex-row gap-4 w-full">
+                                        <Inputs id="companyName" type="text" placeholder={'Empresa ABC LTDA'}
+                                                register={{...register("company_name")}}>Nome da Compania*</Inputs>
+                                        <Inputs id="fantasyName" type="text" placeholder={'ABC Empresa'}
+                                                register={{...register("fantasy_name")}}>Nome Fantasia</Inputs>
 
-                                </section>
-                                <section className="flex flex-row gap-4 w-full">
-                                    <Inputs id="pixKey" type="date" register={{...register("open_date")}}>Data de Abertura</Inputs>
+                                    </section>
+                                    <section className="flex flex-row gap-4 w-full">
+                                        <Inputs id="inscricaoEstadual" type="text" placeholder={'000000-0'}
+                                                register={{...register("estate_registration")}}>Inscrição
+                                            Estadual</Inputs>
+                                        <Inputs id="inscricaoMunicipal" type="text" placeholder={'000000-0'}
+                                                register={{...register("municipal_registration")}}>Inscrição
+                                            Municipal</Inputs>
 
-                                    <Select id={"situations"} register={{...register("situation")}} title={"Situação"} options={[
-                                        {index:"", title:"Selecione uma opção"},
-                                        {index:"active", title:"Ativo"},
-                                        {index:"suspence", title:"Suspenso"},
-                                        {index:"inapt", title:"Inapta"},
-                                        {index:"lowlands", title:"Baixada"}
-                                    ]}/>
-                                </section>
-                            </article>
-                            <article className="space-y-3">
-                                <section className="flex gap-2 items-center mb-4 mt-4">
-                                    <MapPin size={21}/>
-                                    <h2 className="text-sm font-bold">Dados da Empresa</h2>
-                                </section>
-                                <section className="flex flex-row gap-4 w-full items-end">
-                                    <div className="flex flex-col items-start w-[20%] space-y-2">
-                                        <Inputs id="cep" type="text"
-                                                placeholder={'00000-000'}
-                                                register={{...register("cep")}}>CEP * </Inputs>
-                                    </div>
-                                    <Inputs id="street" type="text"
-                                            placeholder={'Street name, Avenue, etc'}
-                                            register={{...register("street")}}>Rua </Inputs>
-                                </section>
-                                <section className="flex flex-row gap-4 w-full items-end">
-                                    <div className="flex flex-col items-start w-[20%] space-y-2">
-                                        <Inputs id="number" type="text"
-                                                placeholder={'123'}
-                                                register={{...register("number")}}>Número </Inputs>
-                                    </div>
-                                    <Inputs id="complement" type="text" placeholder={'Sala, Andar, etc'}
-                                            register={{...register("complement")}}>Complemento </Inputs>
-                                </section>
-                                <section className="flex flex-row gap-4 w-full items-end">
-                                    <Inputs id="neighborhood" type="text" placeholder={'Neighborhood name'}
-                                            register={{...register("neighborhood")}}>Neighborhood </Inputs>
-                                    <div className="flex flex-col items-start w-[50%] space-y-2">
-                                        <Inputs id="city" type="text" placeholder={'Ex: São Paulo...'}
-                                                register={{...register("city")}}>Cidade </Inputs>
-                                    </div>
-                                    <div className="flex flex-col items-start w-[50%] space-y-1">
-                                        <Select id={"uf"} register={{...register("uf")}} title={"UF"} options={
-                                            [
-                                                { "index": "ac", "title": "AC" },
-                                                { "index": "al", "title": "AL" },
-                                                { "index": "ap", "title": "AP" },
-                                                { "index": "am", "title": "AM" },
-                                                { "index": "ba", "title": "BA" },
-                                                { "index": "ce", "title": "CE" },
-                                                { "index": "df", "title": "DF" },
-                                                { "index": "es", "title": "ES" },
-                                                { "index": "go", "title": "GO" },
-                                                { "index": "ma", "title": "MA" },
-                                                { "index": "mt", "title": "MT" },
-                                                { "index": "ms", "title": "MS" },
-                                                { "index": "mg", "title": "MG" },
-                                                { "index": "pa", "title": "PA" },
-                                                { "index": "pb", "title": "PB" },
-                                                { "index": "pr", "title": "PR" },
-                                                { "index": "pe", "title": "PE" },
-                                                { "index": "pi", "title": "PI" },
-                                                { "index": "rj", "title": "RJ" },
-                                                { "index": "rn", "title": "RN" },
-                                                { "index": "rs", "title": "RS" },
-                                                { "index": "ro", "title": "RO" },
-                                                { "index": "rr", "title": "RR" },
-                                                { "index": "sc", "title": "SC" },
-                                                { "index": "sp", "title": "SP" },
-                                                { "index": "se", "title": "SE" },
-                                                { "index": "to", "title": "TO" }
-                                            ]
-                                        } />
+                                    </section>
+                                    <section className="flex flex-row gap-4 w-full">
+                                        <Inputs id="pixKey" type="date" register={{...register("open_date")}}>Data de Abertura</Inputs>
 
-                                    </div>
-                                </section>
-                            </article>
-                            <article className="space-y-3">
-                                <section className="flex gap-2 items-center mb-4 mt-4">
-                                    <Phone size={21}/>
-                                    <h2 className="text-sm font-bold">Contact</h2>
-                                </section>
-                                <section className="flex flex-row gap-4 w-full items-end">
-                                    <Inputs id="cellphone" type="text" placeholder={'(61) 91234-5678'}
-                                            register={{...register("cellphone")}}>Telefone </Inputs>
-                                    <Inputs id="telephone" type="text" placeholder={'company@contact.com'}
-                                            register={{...register("email")}}>E-mail </Inputs>
-                                </section>
+                                        <Select id={"situations"} register={{...register("situation")}} title={"Situação"} options={[
+                                            {index:"", title:"Selecione uma opção"},
+                                            {index:"active", title:"Ativo"},
+                                            {index:"suspence", title:"Suspenso"},
+                                            {index:"inapt", title:"Inapta"},
+                                            {index:"lowlands", title:"Baixada"}
+                                        ]}/>
+                                    </section>
+                                </article>
+                                <article className="space-y-3">
+                                    <section className="flex gap-2 items-center mb-4 mt-4">
+                                        <MapPin size={21}/>
+                                        <h2 className="text-sm font-bold">Dados da Empresa</h2>
+                                    </section>
+                                    <section className="flex flex-row gap-4 w-full items-end">
+                                        <div className="flex flex-col items-start w-[20%] space-y-2">
+                                            <Inputs id="cep" type="text"
+                                                    placeholder={'00000-000'}
+                                                    register={{...register("cep")}}>CEP * </Inputs>
+                                        </div>
+                                        <Inputs id="street" type="text"
+                                                placeholder={'Street name, Avenue, etc'}
+                                                register={{...register("street")}}>Rua </Inputs>
+                                    </section>
+                                    <section className="flex flex-row gap-4 w-full items-end">
+                                        <div className="flex flex-col items-start w-[20%] space-y-2">
+                                            <Inputs id="number" type="text"
+                                                    placeholder={'123'}
+                                                    register={{...register("number")}}>Número </Inputs>
+                                        </div>
+                                        <Inputs id="complement" type="text" placeholder={'Sala, Andar, etc'}
+                                                register={{...register("complement")}}>Complemento </Inputs>
+                                    </section>
+                                    <section className="flex flex-row gap-4 w-full items-end">
+                                        <Inputs id="neighborhood" type="text" placeholder={'Neighborhood name'}
+                                                register={{...register("neighborhood")}}>Neighborhood </Inputs>
+                                        <div className="flex flex-col items-start w-[50%] space-y-2">
+                                            <Inputs id="city" type="text" placeholder={'Ex: São Paulo...'}
+                                                    register={{...register("city")}}>Cidade </Inputs>
+                                        </div>
+                                        <div className="flex flex-col items-start w-[50%] space-y-1">
+                                            <Select id={"uf"} register={{...register("uf")}} title={"UF"} options={
+                                                [
+                                                    { "index": "ac", "title": "AC" },
+                                                    { "index": "al", "title": "AL" },
+                                                    { "index": "ap", "title": "AP" },
+                                                    { "index": "am", "title": "AM" },
+                                                    { "index": "ba", "title": "BA" },
+                                                    { "index": "ce", "title": "CE" },
+                                                    { "index": "df", "title": "DF" },
+                                                    { "index": "es", "title": "ES" },
+                                                    { "index": "go", "title": "GO" },
+                                                    { "index": "ma", "title": "MA" },
+                                                    { "index": "mt", "title": "MT" },
+                                                    { "index": "ms", "title": "MS" },
+                                                    { "index": "mg", "title": "MG" },
+                                                    { "index": "pa", "title": "PA" },
+                                                    { "index": "pb", "title": "PB" },
+                                                    { "index": "pr", "title": "PR" },
+                                                    { "index": "pe", "title": "PE" },
+                                                    { "index": "pi", "title": "PI" },
+                                                    { "index": "rj", "title": "RJ" },
+                                                    { "index": "rn", "title": "RN" },
+                                                    { "index": "rs", "title": "RS" },
+                                                    { "index": "ro", "title": "RO" },
+                                                    { "index": "rr", "title": "RR" },
+                                                    { "index": "sc", "title": "SC" },
+                                                    { "index": "sp", "title": "SP" },
+                                                    { "index": "se", "title": "SE" },
+                                                    { "index": "to", "title": "TO" }
+                                                ]
+                                            } />
 
-                            </article>
-                            <article className="space-y-3">
-                                <section className="flex gap-2 items-center mb-4 mt-4">
-                                    <Building2 size={21}/>
-                                    <h2 className="text-sm font-bold">Atividade Econômica</h2>
-                                </section>
-                                <section className="flex flex-row gap-4 w-full items-end">
-                                    <div className="flex flex-col items-start w-[30%] space-y-2">
-                                        <Inputs id="cnae" type="text"
-                                                placeholder={'0000-0/00'}
-                                                register={{...register("cnae")}}>CNAE *</Inputs>
-                                    </div>
-                                    <Inputs id="activityDescription" type="text"
-                                            placeholder={'Ex: Serviços de manutenção e reparação'}
-                                            register={{...register("activity_description")}}>Descrição de
-                                        Atividade </Inputs>
-                                </section>
+                                        </div>
+                                    </section>
+                                </article>
+                                <article className="space-y-3">
+                                    <section className="flex gap-2 items-center mb-4 mt-4">
+                                        <Phone size={21}/>
+                                        <h2 className="text-sm font-bold">Contact</h2>
+                                    </section>
+                                    <section className="flex flex-row gap-4 w-full items-end">
+                                        <Inputs id="cellphone" type="text" placeholder={'(61) 91234-5678'}
+                                                register={{...register("cellphone")}}>Telefone </Inputs>
+                                        <Inputs id="telephone" type="text" placeholder={'company@contact.com'}
+                                                register={{...register("email")}}>E-mail </Inputs>
+                                    </section>
 
-                            </article>
-                            <article className="space-y-3">
-                                <section className="flex gap-2 items-center mb-4 mt-4">
-                                    <CreditCard size={21}/>
-                                    <h2 className="text-sm font-bold">Dados para Pagamento</h2>
-                                </section>
-                                <section className="flex flex-row gap-4 w-full items-end">
-                                    <div className="flex flex-col items-start w-[30%] space-y-1">
-                                        <Select id={"pixtype"} register={{...register("pixtype")}} title={"Tipo de chave"} options={[
-                                            {index:"", title:'Tipo de chave'},
-                                            {index:"cpf", title:'CPF'},
-                                            {index:"cnpj", title:'CNPJ'},
-                                            {index:"email", title:'E-mail'},
-                                            {index:"cellphone", title:'CPF'},
-                                            {index:"aleatory_key", title:'Chave aleatória'},
-                                        ]} />
-                                    </div>
-                                    <Inputs id="pixKeyPayment" type="text"
-                                            placeholder={'Chave PIX'}
-                                            register={{...register("pixkey")}}>Pix Key</Inputs>
-                                </section>
+                                </article>
+                                <article className="space-y-3">
+                                    <section className="flex gap-2 items-center mb-4 mt-4">
+                                        <Building2 size={21}/>
+                                        <h2 className="text-sm font-bold">Atividade Econômica</h2>
+                                    </section>
+                                    <section className="flex flex-row gap-4 w-full items-end">
+                                        <div className="flex flex-col items-start w-[30%] space-y-2">
+                                            <Inputs id="cnae" type="text"
+                                                    placeholder={'0000-0/00'}
+                                                    register={{...register("cnae")}}>CNAE *</Inputs>
+                                        </div>
+                                        <Inputs id="activityDescription" type="text"
+                                                placeholder={'Ex: Serviços de manutenção e reparação'}
+                                                register={{...register("activity_description")}}>Descrição de
+                                            Atividade </Inputs>
+                                    </section>
 
-                            </article>
+                                </article>
+                                <article className="space-y-3">
+                                    <section className="flex gap-2 items-center mb-4 mt-4">
+                                        <CreditCard size={21}/>
+                                        <h2 className="text-sm font-bold">Dados para Pagamento</h2>
+                                    </section>
+                                    <section className="flex flex-row gap-4 w-full items-end">
+                                        <div className="flex flex-col items-start w-[30%] space-y-1">
+                                            <Select id={"pixtype"} register={{...register("pixtype")}} title={"Tipo de chave"} options={[
+                                                {index:"", title:'Tipo de chave'},
+                                                {index:"cpf", title:'CPF'},
+                                                {index:"cnpj", title:'CNPJ'},
+                                                {index:"email", title:'E-mail'},
+                                                {index:"cellphone", title:'CPF'},
+                                                {index:"aleatory_key", title:'Chave aleatória'},
+                                            ]} />
+                                        </div>
+                                        <Inputs id="pixKeyPayment" type="text"
+                                                placeholder={'Chave PIX'}
+                                                register={{...register("pixkey")}}>Pix Key</Inputs>
+                                    </section>
 
-                            <div className="w-full flex flex-row mt-4 gap-4 ">
-                                <button type="submit"
-                                        className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit
-                                </button>
-                                <button onClick={() => setShowCompaniesForm(false)}
-                                        className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>)}
+                                </article>
 
+                                <div className="w-full flex flex-row mt-4 gap-4 ">
+                                    <button type="submit"
+                                            className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit
+                                    </button>
+                                    <button onClick={() => setShowCompaniesForm(false)}
+                                            className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
             </div>
         </div>
         <div className="flex justify-center">
@@ -529,19 +544,20 @@ export function Page2(){
                                 </div>
                             </td>
                         </tr>))}
-                        {companies.length === 0 ??
-                            <div className="justify-center h-screen w-full">
-                                <div className="w-full h-[20%] flex flex-col justify-center items-center space-x-3">
-                                    <Loader2 className="animate-spin w-40 h-40"/>
-                                    <h2>Carregando...</h2>
-                                </div>
-                            </div>
-                        }
+
 
                         </tbody>
                     </table>
 
                 </section>
+                {companies.length === 0 &&
+                    <div className="justify-center w-full">
+                        <div className="flex flex-col justify-center items-center space-x-3">
+                            <Loader2 className="animate-spin w-20 h-20"/>
+                            <h2>Carregando...</h2>
+                        </div>
+                    </div>
+                }
             </div>
             {showInfo && selectedCompanyInfo && (
                 <ModalInfo selectedCompanyInfo={selectedCompanyInfo}
@@ -618,80 +634,81 @@ export function Page3() {
                                 onClick={() => setShowCardsForm(!showCardsForm)}>{showCardsForm ? "Cancelar" : "Novo cartão"}</OpenFromButton>
                         </div>
                     </section>
-                    {showCardsForm && (
-                        <div className="">
-                            <form action={() => handleSubmit(async (data) => {
-                                await requests.onPost("cards", data)
-                                fetchData().then()
-                            })()}
-                                  className="flex flex-col  space-y-3">
-                                <section >
-                                    <button type={"button"} onClick={() => setShowScanner(true)}
-                                            className="flex items-center gap-4 bg-buttons-color border text-xs border-buttons-hover shadow-xs text-secondary-titles-color px-4 py-2 rounded-lg hover:bg-buttons-hover transition-discrete">
-                                        <ScanBarcode size={20}/>
-                                        Scan Code
-                                    </button>
-                                </section>
-                                <section className="flex flex-row gap-4 w-full">
-                                    <div className="flex flex-col items-start w-full space-y-1">
-                                        <Inputs id={"bar_code"} type="text" children={"Bar code"} register={{...register("bar_code")}} placeholder={"0000000000000000000000"} />
-                                    </div>
-                                    <section className="w-full flex flex-col items-start relative">
-                                        <label htmlFor="member" className="text-xs">
-                                            Member
-                                        </label>
-                                        <input
-                                            className="w-full text-xs bg-bg-secondary-color border border-bg-secondary-destack-color rounded-md hover:cursor-auto focus:outline-none placeholder:text-gray-500 transition-all px-2 py-2"
-                                            placeholder="Member" type="text" id="member"
-                                            {...register("member")} />
-                                        {showOptions && filted.length !== 0 && <div
-                                            className={"w-full items-start bg-gray-100 border border-t-0 border-gray-400 rounded-md rounded-t-none absolute top-11"}>
-                                            <ul className={"w-full "}>
-                                                {filted.map((member) => (
-                                                    <li key={member.id}
-                                                        onClick={() => selectSuggestion(member.name)}
-                                                        className={"flex items-start pl-2 py-1 hover:bg-gray-300"}>
-                                                        {member.name}
-                                                    </li>
-                                                ))}
-
-                                            </ul>
-                                        </div>}
-
+                        <div className={`grid transition-all duration-300 ease-in-out ${
+                            showCardsForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                        }`}>
+                            <div className="overflow-hidden">
+                                <form action={() => handleSubmit(async (data) => {
+                                    await requests.onPost("cards", data)
+                                    fetchData().then()
+                                })()}
+                                      className="flex flex-col  space-y-3">
+                                    <section >
+                                        <button type={"button"} onClick={() => setShowScanner(true)}
+                                                className="flex items-center gap-4 bg-buttons-color border text-xs border-buttons-hover shadow-xs text-secondary-titles-color px-4 py-2 rounded-lg hover:bg-buttons-hover transition-discrete">
+                                            <ScanBarcode size={20}/>
+                                            Scan Code
+                                        </button>
                                     </section>
-                                </section>
+                                    <section className="flex flex-row gap-4 w-full">
+                                        <div className="flex flex-col items-start w-full space-y-1">
+                                            <Inputs id={"bar_code"} type="text" children={"Bar code"} register={{...register("bar_code")}} placeholder={"0000000000000000000000"} />
+                                        </div>
+                                        <section className="w-full flex flex-col items-start relative">
+                                            <label htmlFor="member" className="text-xs">
+                                                Member
+                                            </label>
+                                            <input
+                                                className="w-full text-xs bg-bg-secondary-color border border-bg-secondary-destack-color rounded-md hover:cursor-auto focus:outline-none placeholder:text-gray-500 transition-all px-2 py-2"
+                                                placeholder="Member" type="text" id="member"
+                                                {...register("member")} />
+                                            {showOptions && filted.length !== 0 && <div
+                                                className={"w-full items-start bg-gray-100 border border-t-0 border-gray-400 rounded-md rounded-t-none absolute top-11"}>
+                                                <ul className={"w-full "}>
+                                                    {filted.map((member) => (
+                                                        <li key={member.id}
+                                                            onClick={() => selectSuggestion(member.name)}
+                                                            className={"flex items-start pl-2 py-1 hover:bg-gray-300"}>
+                                                            {member.name}
+                                                        </li>
+                                                    ))}
+
+                                                </ul>
+                                            </div>}
+
+                                        </section>
+                                    </section>
 
 
-                                <section className="flex flex-row gap-4 w-full">
-                                    <Inputs id="issue_date" type="date" placeholder={'(61) 91234-5678'}
-                                            register={{...register("issue_date")}}>Issue Date *</Inputs>
-                                    <Inputs id="due_date" type="date" register={{...register("due_date")}}>Due Date
-                                        *</Inputs>
-                                </section>
+                                    <section className="flex flex-row gap-4 w-full">
+                                        <Inputs id="issue_date" type="date" placeholder={'(61) 91234-5678'}
+                                                register={{...register("issue_date")}}>Issue Date *</Inputs>
+                                        <Inputs id="due_date" type="date" register={{...register("due_date")}}>Due Date
+                                            *</Inputs>
+                                    </section>
 
-                                <section className="flex flex-row gap-4 w-full">
-                                    <Select id={"status"} register={{...register("status")}} title={"Status"} options={[
-                                        {index: "", title: "Selecione uma opção"},
-                                        {index: "active", title: "Ativo"},
-                                        {index: "due", title: "Vencido"},
-                                        {index: "active", title: "Cancelado"},
-                                    ]} />
-                                </section>
+                                    <section className="flex flex-row gap-4 w-full">
+                                        <Select id={"status"} register={{...register("status")}} title={"Status"} options={[
+                                            {index: "", title: "Selecione uma opção"},
+                                            {index: "active", title: "Ativo"},
+                                            {index: "due", title: "Vencido"},
+                                            {index: "active", title: "Cancelado"},
+                                        ]} />
+                                    </section>
 
 
-                                <div className="w-full flex flex-row mt-4 gap-4 ">
-                                    <button type="submit"
-                                            className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit
-                                    </button>
-                                    <button onClick={() => setShowCardsForm(false)}
-                                            className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel
-                                    </button>
-                                </div>
-                            </form>
-                            {showScanner && <Scanner hidden={() => setShowScanner(false)} code={setValue}/>}
+                                    <div className="w-full flex flex-row mt-4 gap-4 ">
+                                        <button type="submit"
+                                                className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit
+                                        </button>
+                                        <button onClick={() => setShowCardsForm(false)}
+                                                className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                                {showScanner && <Scanner hidden={() => setShowScanner(false)} code={setValue}/>}
+                            </div>
                         </div>
-
-                    )}
                 </div>
             </div>
             <div className="flex justify-center">
@@ -758,18 +775,18 @@ export function Page3() {
                                 );
                             })}
 
-                            {cards.length === 0 ??
-                                <div className="justify-center h-screen w-full">
-                                    <div className="w-full h-[20%] flex flex-col justify-center items-center space-x-3">
-                                        <Loader2 className="animate-spin w-40 h-40"/>
-                                        <h2>Carregando...</h2>
-                                    </div>
-                                </div>
-                            }
-
                             </tbody>
                         </table>
+
                     </section>
+                    {cards.length === 0 &&
+                        <div className="justify-center w-full">
+                            <div className="flex flex-col justify-center items-center space-x-3">
+                                <Loader2 className="animate-spin w-20 h-20"/>
+                                <h2>Carregando...</h2>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </main>

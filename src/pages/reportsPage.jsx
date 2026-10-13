@@ -1,6 +1,6 @@
 import Menu from "../components/menu.jsx"
 import Header from "../components/header.jsx";
-import {BadgeDollarSign, Search, Trash2} from "lucide-react";
+import {BadgeDollarSign, Loader2, Search, Trash2} from "lucide-react";
 import Header2 from "../components/header2.jsx";
 import SearchBar from "../components/searchBar.jsx";
 import {useEffect, useState} from "react";
@@ -118,6 +118,14 @@ function ReportsPage() {
                           </tbody>
                       </table>
                   </section>
+                  {reports.length === 0 &&
+                      <div className="justify-center w-full">
+                          <div className=" flex flex-col justify-center items-center space-x-3">
+                              <Loader2 className="animate-spin w-40 h-40"/>
+                              <h2>Carregando...</h2>
+                          </div>
+                      </div>
+                  }
                   {showModal && (
                       <ModalReports
                           onFetch={() => onfetch()}
