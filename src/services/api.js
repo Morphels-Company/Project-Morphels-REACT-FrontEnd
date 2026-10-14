@@ -4,18 +4,17 @@ import { openPermissionModal } from "../context/withoutPermissionModalHandler.js
 const api = axios.create({
     baseURL: import.meta.env.VITE_DATABASE_URL_ROOT,
     withCredentials: true,
-    timeout: 10000,
 
 });
 
-api.interceptors.request.use(async (config) => {
-    const delay = 2000
-    await new Promise(resolve => setTimeout(resolve, delay));
-    return config;
-},
-    (error) => {
-        return Promise.reject(error);
-    })
+// api.interceptors.request.use(async (config) => {
+//     const delay = 2000
+//     await new Promise(resolve => setTimeout(resolve, delay));
+//     return config;
+// },
+//     (error) => {
+//         return Promise.reject(error);
+//     })
 
 // Interceptor de resposta
 api.interceptors.response.use(

@@ -74,7 +74,7 @@ function ExpensesPage() {
 
     const onSendData = async (data) => {
         await requests.onPost("expenses", data);
-        fetchData().then();
+        fetchData(period.start_date, period.end_date).then();
     };
 
     // Filtra os itens em tempo real sem destruir a lista original do estado `expenses`
@@ -92,7 +92,7 @@ function ExpensesPage() {
             <Menu/>
 
             <div className="flex justify-center">
-                <div className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[90vw] h-[85vh] md:w-[55vw]">
+                <div className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[90vw] h-[80vh] md:w-[55vw]">
                     <section className="flex justify-between items-center">
                         <Header2
                             title={"Fomulário de despesas"}
@@ -108,10 +108,12 @@ function ExpensesPage() {
                                 register={{...register("search_bar")}} />
 
                     </div>
-                    <DateFilterDropdown
-                        defaultPeriodKey="this_month"
-                        onApply={handlePeriodChange}
-                    />
+                    <div className="flex justify-end">
+                        <DateFilterDropdown
+                            defaultPeriodKey="this_month"
+                            onApply={handlePeriodChange}
+                        />
+                    </div>
 
                     <div className={`grid transition-all duration-300 ease-in-out ${
                         showForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"

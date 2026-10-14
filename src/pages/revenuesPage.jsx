@@ -121,7 +121,7 @@ function RevenuesPage() {
 
             <div className="flex justify-center">
                 <div
-                    className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[90vw] h-[85vh] md:w-[55vw]">
+                    className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[90vw] h-[80vh] md:w-[55vw]">
                     <section className="flex justify-between items-center">
                         <Header2
                             title={"Fomulário de receitas"}
@@ -139,10 +139,12 @@ function RevenuesPage() {
                                 register={{...register("search_bar")}} />
 
                     </div>
-                    <DateFilterDropdown
-                        defaultPeriodKey="this_month"
-                        onApply={handlePeriodChange}
-                    />
+                    <div className="flex justify-end">
+                        <DateFilterDropdown
+                            defaultPeriodKey="this_month"
+                            onApply={handlePeriodChange}
+                        />
+                    </div>
 
                     {/* Container animado de expansão/colapso */}
                     <div className={`grid transition-all duration-300 ease-in-out ${
@@ -155,9 +157,8 @@ function RevenuesPage() {
                                         handleSubmit(async (data) => {
                                             try {
                                                 await requests.onPost("revenues", data)
-                                                fetchData().then()
+                                                fetchData(period.start_date, period.end_date).then();
                                                 reset()
-                                                setShowForm(false) // Opcional: fecha o form após enviar com sucesso
                                             } catch (error) {
                                                 console.error(error)
                                             }

@@ -14,6 +14,7 @@ export default function PermissionsPage(){
     const [pages, setPages] = useState([]);
     const [numberOfPages, setNumberOfPages] = useState(0);
     const [showSingUpUserForm, setShowSingUpUserForm] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const {register, control, handleSubmit, setValue} = useForm({
         defaultValues: {
             role_name: "",
@@ -31,16 +32,24 @@ export default function PermissionsPage(){
 
 
     const getInfos = async () => {
-        const roles_response = await request.onGet('roles');
-        const pages_response = await request.onGet('pages');
-        const response_number_of_pages = await request.onGet('pages/count');
+        try{
+            const roles_response = await request.onGet('roles');
+            const pages_response = await request.onGet('pages');
+            const response_number_of_pages = await request.onGet('pages/count');
 
-        setRoles(roles_response.roles);
-        setPages(pages_response);
-        setNumberOfPages(parseInt(response_number_of_pages[0]?.number_of_pages));
+            setRoles(roles_response.roles);
+            setPages(pages_response);
+            setNumberOfPages(parseInt(response_number_of_pages[0]?.number_of_pages));
+        }catch (error){
+            console.log(error);
+        }finally {
+            setIsLoading(false);
+        }
+
     }
 
     useEffect(()=>{
+        setIsLoading(true);
         getInfos().then();
     },[])
 
@@ -74,11 +83,11 @@ export default function PermissionsPage(){
         <main className={'flex flex-col items-center justify-center '}>
             <div className={'flex w-[55vw] justify-between items-center py-6'}>
                 <section className={'flex flex-col items-start '}>
-                    <h1 className={'text-2xl'}>Cadastro de Usuários</h1>
-                    <h2 className={'text-sm text-neutral-500'}>Gerencie os usuários do sistema</h2>
+                    <h1 className={'text-2xl'}>Cadastro de Permissões</h1>
+                    <h2 className={'text-sm text-neutral-500'}>Gerencie as permissões do sistema</h2>
                 </section>
                 <section>
-                    <button onClick={() => setShowSingUpUserForm(true)} className={'flex gap-2 bg-black text-primary-titles-color text-sm p-2 rounded-md items-center'}><Plus size={16}/> <p>Novo Usuário</p> </button>
+                    <button onClick={() => setShowSingUpUserForm(true)} className={'flex gap-2 bg-black text-secondary-titles-color text-sm p-2 rounded-md items-center'}><Plus size={16}/> <p>Novo Usuário</p> </button>
                 </section>
                 {showSingUpUserForm && (
                     <div className="fixed inset-0 bg-[rgb(0,0,0,0.7)] bg-opacity-50 flex items-center justify-center">
@@ -164,10 +173,10 @@ export default function PermissionsPage(){
                     </div>
                 )}
             </div>
-            {roles.length === 0 ??
+            {isLoading &&
                 <div className="justify-center h-screen w-full">
                     <div className="w-full h-[20%] flex flex-col justify-center items-center space-x-3">
-                        <Loader2 className="animate-spin w-40 h-40"/>
+                        <Loader2 className="animate-spin w-20 h-20"/>
                         <h2>Carregando...</h2>
                     </div>
                 </div>
@@ -182,6 +191,7 @@ export default function PermissionsPage(){
                     />
                 ))}
             </div>
+
         </main>
     );
 }

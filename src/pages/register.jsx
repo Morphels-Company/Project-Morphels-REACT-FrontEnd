@@ -2,8 +2,9 @@ import Menu from "../components/menu.jsx"
 import Header from "../components/header.jsx";
 import {Users, Building2, IdCard} from "lucide-react";
 import {useState} from "react";
-import {Page1, Page2, Page3} from '../components/registerPages.jsx'
-import MainRequests from "../services/requests.js";
+import {MemberPage} from "../components/subpages/registerMerbersPage.jsx";
+import {CompaniesPage} from "../components/subpages/registerCompaniesPages.jsx";
+import {CardsPage} from "../components/subpages/registerCardsPage.jsx";
 import {MenuProvider} from "../context/menuContext.jsx";
 import SideMenu from "../components/sideMenu.jsx";
 
@@ -12,9 +13,9 @@ function Register() {
     const [permissions, setPermissions] = useState([1,2,3]);
 
     const pages = [
-        { id: 1, name: "Membros", permission: 1, component: <Page1 />, icon: <Users  size={14}/> },
-        { id: 2, name: "Companias", permission: 2, component: <Page2 />, icon: <Building2  size={14}/> },
-        { id: 3, name: "Cartões", permission: 3, component: <Page3 />, icon: <IdCard size={14}/> },
+        { id: 1, name: "Membros", permission: 1, component: <MemberPage />, icon: <Users  size={14}/> },
+        { id: 2, name: "Companias", permission: 2, component: <CompaniesPage />, icon: <Building2  size={14}/> },
+        { id: 3, name: "Cartões", permission: 3, component: <CardsPage />, icon: <IdCard size={14}/> },
     ];
 
     const currentPage = pages.find(p => p.permission === activePage && permissions.includes(p.permission));

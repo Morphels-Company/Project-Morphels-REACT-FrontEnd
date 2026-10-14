@@ -19,17 +19,26 @@ function ReportsPage() {
     const [search, setSearch] = useState("")
     const [showModal, setShowModal] = useState(false)
     const [branches, setBranches] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
     const navigate = useNavigate();
 
     async function onfetch(){
-        const response_reports = await request.onGet("reports", search)
-        const response_branches = await request.onGet("branches", search)
+        try{
+            const response_reports = await request.onGet("reports", search)
+            const response_branches = await request.onGet("branches", search)
 
-        setReports(response_reports);
-        setBranches(response_branches ? response_branches : []);
+            setReports(response_reports);
+            setBranches(response_branches ? response_branches : []);
+        }catch(err){
+            console.log(err)
+        }finally {
+            setIsLoading(false)
+        }
+
     }
 
     useEffect(() => {
+        setIsLoading(true)
         onfetch().then()
     },[])
 
@@ -47,7 +56,7 @@ function ReportsPage() {
           <Menu/>
 
           <div className="flex justify-center">
-              <div className="flex flex-col justify-center mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[80vw] md:w-[55vw]">
+              <div className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[80vw] h-[60vh] md:w-[55vw]">
                   <section className="flex justify-between items-center">
                       <Header2
                           title={"Formulário de relatórios"}
@@ -118,10 +127,10 @@ function ReportsPage() {
                           </tbody>
                       </table>
                   </section>
-                  {reports.length === 0 &&
+                  {isLoading &&
                       <div className="justify-center w-full">
                           <div className=" flex flex-col justify-center items-center space-x-3">
-                              <Loader2 className="animate-spin w-40 h-40"/>
+                              <Loader2 className="animate-spin w-20 h-20"/>
                               <h2>Carregando...</h2>
                           </div>
                       </div>
