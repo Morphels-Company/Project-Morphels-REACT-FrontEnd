@@ -14,6 +14,7 @@ import {useForm} from "react-hook-form";
 import MainRequests from "../services/requests.js";
 import Inputs from "../components/inputs.jsx";
 import { Loader2 } from "lucide-react";
+import DateFilterDropdown from "../components/DateFilterDropdown.jsx";
 
 const requests = new MainRequests()
 
@@ -25,12 +26,10 @@ function RevenuesPage() {
     const [editData, setEditData] = useState(null);
     const [search, setSearch] = useState("")
     const [showFilter, setShowFilter] = useState(false);
-    const [type, setType] = useState(""),
-        [start_date, setStart_date] = useState(""),
-        [end_date, setEnd_date] = useState("")
     const [members, setMembers] = useState([]);
     const [branches, setBranches] = useState([]);
     const [filted, setFilted] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     const {register, watch, setValue, handleSubmit, reset} = useForm({
         defaultValues:{
@@ -44,48 +43,49 @@ function RevenuesPage() {
 
 
     const searchTerm = watch("member")
+    const searchBarTerm = watch("search_bar");
 
     const onShowForm = () => {
         setShowForm(!showForm);
     };
 
-    const fetchData = async () => {
+    const [period, setPeriod] = useState({
+        start_date: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString(),
+        end_date:   new Date().toISOString(),
+    });
+
+    const fetchData = async (start_date, end_date) => {
         try {
-            const response_revenues = await requests.onGet("revenues");
+            const response_revenues = await requests.onGet(`revenues/${start_date}/${end_date}`);
             const response_members = await requests.onGet("members");
             const response_branches = await requests.onGet("branches");
 
-            setRevenues(response_revenues ? response_revenues: []);
-            setMembers(response_members ? response_members : []);
-            setBranches(response_branches ? response_branches : []);
+            console.log(response_revenues.length)
+
+            setRevenues(response_revenues.length !== undefined ? response_revenues : []);
+            setMembers(response_members.length !== 0 ? response_members : []);
+            setBranches(response_branches.length !== 0 ? response_branches : []);
         } catch (error) {
             console.error("Erro ao buscar revenues:", error);
+        }finally {
+            setIsLoading(false);
         }
     };
     useEffect(() => {
-        fetchData().then();
+        setIsLoading(true);
+        fetchData(period.start_date, period.end_date).then();
 
-    }, [search]);
+    }, [period]);
 
-    useEffect(() => {
+    const handlePeriodChange = ({ start_date, end_date }) => {
+        setPeriod({ start_date, end_date });
+    };
 
-        if (!type && !start_date && !end_date) return;
-
-        async function onFilterRevenues() {
-            try {
-                const response = await requests.onFilter("revenues", {
-                    type,
-                    start_date,
-                    end_date,
-                });
-                setRevenues(response); // garante que seja array
-            } catch (error) {
-                console.error("Erro ao filtrar revenues:", error);
-            }
-        }
-
-        onFilterRevenues().then(); //
-    }, [type, start_date, end_date]);
+    // Filtra os itens em tempo real sem destruir a lista original do estado `expenses`
+    const filteredRevenues = searchBarTerm
+        ? revenues.filter((revenue) =>
+            revenue.member.toLowerCase().includes(searchBarTerm.toLowerCase()))
+        : revenues;
 
     useEffect(() => {
         if (searchTerm && searchTerm.length > 0) {
@@ -109,22 +109,7 @@ function RevenuesPage() {
         setShowOptions(false);
     }
 
-    if(revenues.length === 0){
-        return (
-            <div className="justify-center h-screen w-full">
-                <MenuProvider>
-                    <Header/>
-                    <SideMenu/>
-                </MenuProvider>
-                <Menu/>
-
-                <div className="w-full h-[80%] flex flex-col justify-center items-center space-x-3">
-                    <Loader2 className="animate-spin w-40 h-40"/>
-                    <h2>Carregando...</h2>
-                </div>
-            </div>
-        )
-    }
+    // Tela de carregamento inicial real baseada no estado isLoading
 
     return (
         <div className="justify-center h-screen w-full">
@@ -136,7 +121,7 @@ function RevenuesPage() {
 
             <div className="flex justify-center">
                 <div
-                    className="flex flex-col justify-center mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[80vw] md:w-[55vw]">
+                    className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[90vw] h-[80vh] md:w-[55vw]">
                     <section className="flex justify-between items-center">
                         <Header2
                             title={"Fomulário de receitas"}
@@ -148,60 +133,69 @@ function RevenuesPage() {
                             </OpenFromButton>
                         </div>
                     </section>
-                    <SearchArea placeholder={"Search by description or member..."}
-                                showFilter={() => setShowFilter(!showFilter)}
-                                onChange={(e) => {
-                                    setSearch(e.target.value)
-                                }}
-                                value={search}/>
-                        {showFilter && <Filt type={type} start_date={start_date} end_date={end_date}
-                                             onChangeType={(e) => setType(e.target.value)}
-                                             onChangeStartDate={(e) => setStart_date(e.target.value)}
-                                             onChangeEndDate={(e) => setEnd_date(e.target.value)}
-                                             options={["Dizimo", "Oferta", "Doação"]}/>}
 
-                        {showForm && (
-                            <div className="bg-bg-secondary-color p-3 rounded-sm border border-bg-secondary-destack-color shadow-md">
+                    <div className="flex  ">
+                        <Inputs id="search_bar" type="text" placeholder="Busque pelo nome do membro"
+                                register={{...register("search_bar")}} />
+
+                    </div>
+                    <div className="flex justify-end">
+                        <DateFilterDropdown
+                            defaultPeriodKey="this_month"
+                            onApply={handlePeriodChange}
+                        />
+                    </div>
+
+                    {/* Container animado de expansão/colapso */}
+                    <div className={`grid transition-all duration-300 ease-in-out ${
+                        showForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                    }`}>
+                        <div className="overflow-hidden">
+                            <div className="bg-bg-secondary-color p-3 rounded-lg border border-bg-secondary-destack-color shadow-md">
                                 <form
                                     action={() => {
                                         handleSubmit(async (data) => {
                                             try {
                                                 await requests.onPost("revenues", data)
-                                                fetchData().then()
+                                                fetchData(period.start_date, period.end_date).then();
                                                 reset()
                                             } catch (error) {
                                                 console.error(error)
                                             }
                                         })()
-
                                     }}
-                                    className="flex flex-col  space-y-3"
+                                    className="flex flex-col space-y-3"
                                 >
                                     <section className="flex flex-col items-start relative space-y-1">
                                         <label htmlFor="member" className="text-xs">
                                             Member
                                         </label>
                                         <input
-                                            className="w-full text-xs bg-bg-secondary-color border rounded-md border-bg-secondary-destack-color hover:cursor-auto  focus:outline-none placeholder:text-gray-500 transition-all px-2 py-2"
+                                            className="w-full text-xs bg-bg-secondary-color border rounded-md border-bg-secondary-destack-color hover:cursor-auto focus:outline-none placeholder:text-gray-500 transition-all px-2 py-2"
                                             placeholder="Member" type="text" id="member"
-                                            {...register("member")} />
-                                        {showOptions && filted.length !== 0 && <div
-                                            className={"w-full items-start bg-bg-primary-color border border-t-0 border-bg-secondary-color rounded-md rounded-t-none absolute top-11"}>
-                                            <ul className={"w-full "}>
-                                                {filted.map((member) => (
-                                                    <li key={member.id}
-                                                        onClick={() => selectSuggestion(member.name)}
-                                                        className={"flex items-start pl-2 py-1 text-primary-titles-color  hover:bg-bg-secondary-destack-color"}>
-                                                        {member.name}
-                                                    </li>
-                                                ))}
+                                            {...register("member")}
+                                        />
 
-                                            </ul>
-                                        </div>}
-
+                                        {showOptions && filted.length !== 0 && (
+                                            <div className="w-full items-start bg-bg-primary-color border border-t-0 border-bg-secondary-color rounded-md rounded-t-none absolute top-11 z-30 shadow-lg">
+                                                <ul className="w-full">
+                                                    {filted.map((member) => (
+                                                        <li key={member.id}
+                                                            onMouseDown={(e) => {
+                                                                e.preventDefault();
+                                                                selectSuggestion(member.name);
+                                                            }}
+                                                            className="flex items-start pl-2 py-1 text-primary-titles-color hover:bg-bg-secondary-destack-color cursor-pointer"
+                                                        >
+                                                            {member.name}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
                                     </section>
 
-                                    <section className="flex flex-row gap-4 w-full">
+                                    <section className="flex flex-col gap-4 w-full md:flex-row">
                                         <Select id={"type"} register={{...register("type")}} title={"Tipo"} options={[
                                             {index:"", title: "Selecione uma opção"},
                                             {index:"doação", title: "Doação"},
@@ -213,13 +207,12 @@ function RevenuesPage() {
                                             {index:"mensalidade", title: "Mensalidade"},
                                             {index:"rendimento_financeiro", title: "Rendimento financeiro"},
                                             {index:"outros", title: "Outros"},
-
                                         ]} />
                                         <Inputs id="values" type="number" placeholder="R$ 00,00" children="Valor" step="0.01"
                                                 register={{...register("value")}}></Inputs>
-
                                     </section>
-                                    <section className="flex flex-row gap-4 w-full">
+
+                                    <section className="flex flex-col gap-4 w-full md:flex-row">
                                         <Select id={"payment"} register={{...register("payment")}} title={"Meio de pagamento"} options={[
                                             {index:"", title: "Selecione uma opção"},
                                             {index:"pix_deposito", title: "Pix/Depósito"},
@@ -228,8 +221,8 @@ function RevenuesPage() {
                                         ]} />
                                         <Inputs id="date" type="date" children="Data"
                                                 register={{...register("date")}}></Inputs>
-
                                     </section>
+
                                     <section className="flex flex-col items-start">
                                         <Select id={"branch"} register={{...register("branch")}} title={"Filial"} options={[
                                             {index:"", title: "Selecione uma opção"},
@@ -238,26 +231,39 @@ function RevenuesPage() {
                                                 title: String(branch.name)
                                             }))
                                         ]} />
-
                                     </section>
 
-                                    <div className="w-full flex flex-row mt-4 gap-4 ">
+                                    <div className="w-full flex flex-row mt-4 gap-4">
                                         <button
                                             type="submit"
-                                            className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete"
+                                            className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-colors"
                                         >
                                             Submit
                                         </button>
-                                        <button onClick={() => setShowForm(false)}
-                                                className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowForm(false)}
+                                            className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-colors"
+                                        >
                                             Cancel
                                         </button>
                                     </div>
                                 </form>
                             </div>
-                        )}
-
-                        {revenues.map((data) => (
+                        </div>
+                    </div>
+                    <div className={"overflow-auto"}>
+                        {isLoading ? (
+                            // 1. Se estiver carregando, mostra o loader
+                            <div className=" flex flex-col justify-center items-center space-x-3">
+                                <Loader2 className="animate-spin w-20 h-20"/>
+                                <h2>Carregando...</h2>
+                            </div>
+                        ) : filteredRevenues.length === 0 ? (
+                            // 2. Se já terminou de carregar mas a lista está vazia
+                            <p className="text-center text-xs text-gray-400 py-4">Nenhuma receita encontrada.</p>
+                        ) : (
+                        filteredRevenues.map((data) => (
                             <DataBalons
                                 key={data.id}
                                 type={data.type}
@@ -279,7 +285,11 @@ function RevenuesPage() {
                                     }
                                 }}
                             />
-                        ))}
+                        ))
+                    )}
+                    </div>
+
+
                         {showEditForm && (
                             <ModalRevenues
                                 onGetRevenues={() => fetchData()}

@@ -13,32 +13,43 @@ export default function BranchesPage() {
     const [branches, setBranches] = useState([]);
     const [sectors, setSectors]   = useState([]);
     const [showForm, setShowForm] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const { register, handleSubmit, reset } = useForm({
         defaultValues: { name: "", owner: "", sector: "" }
     });
 
     const fetchAll = async () => {
-        const [branchRes, sectorRes] = await Promise.all([
-            request.onGet("branches"),
-            request.onGet("sectors"),
-        ]);
-        setBranches(branchRes ?? []);
-        setSectors(sectorRes  ?? []);
+        try{
+            const [branchRes, sectorRes] = await Promise.all([
+                request.onGet("branches"),
+                request.onGet("sectors"),
+            ]);
+            setBranches(branchRes ?? []);
+            setSectors(sectorRes  ?? []);
+        }catch (error){
+            console.log(error);
+        }finally {
+            setIsLoading(false);
+        }
+
     };
 
-    useEffect(() => { fetchAll(); }, []);
+    useEffect(() => {
+        setIsLoading(true);
+        fetchAll().then();
+    }, []);
 
     const onCreateBranch = async (data) => {
         await request.onPost("branches", data);
         reset();
         setShowForm(false);
-        fetchAll();
+        fetchAll().then();
     };
 
     const onDeleteBranch = async (id) => {
         await request.onDelete("branches", id);
-        fetchAll();
+        fetchAll().then();
     };
 
 
@@ -60,14 +71,6 @@ export default function BranchesPage() {
                     </button>
                 </section>
             </div>
-            {branches.length === 0 ??
-                <div className="justify-center h-screen w-full">
-                    <div className="w-full h-[20%] flex flex-col justify-center items-center space-x-3">
-                        <Loader2 className="animate-spin w-40 h-40"/>
-                        <h2>Carregando...</h2>
-                    </div>
-                </div>
-            }
             <div className="grid grid-cols-1 gap-2 w-[80vw] md:w-[55vw] xl:grid-cols-2 2xl:grid-cols-3">
                 {branches.map(branch => (
                     <BranchBallon
@@ -77,6 +80,14 @@ export default function BranchesPage() {
                     />
                 ))}
             </div>
+            {isLoading &&
+                <div className="justify-center w-full">
+                    <div className=" flex flex-col justify-center items-center space-x-3">
+                        <Loader2 className="animate-spin w-20 h-20"/>
+                        <h2>Carregando...</h2>
+                    </div>
+                </div>
+            }
 
             {showForm && (
                 <div className="fixed inset-0 bg-[rgb(0,0,0,0.7)] flex items-center justify-center">

@@ -1,6 +1,6 @@
 import Header from "../components/header.jsx";
 import Menu from "../components/menu.jsx";
-import {User, Church, MapPinHouse, ListCheck} from "lucide-react";
+import {User, Church, MapPinHouse, ListCheck, Loader2} from "lucide-react";
 import {useState, useEffect} from "react";
 import MainRequests from "../services/requests.js";
 import UsersPage from "../components/subpages/settingsUsersPage.jsx";
@@ -102,7 +102,13 @@ function SettingsPage() {
                 </ul>
             </section>
 
-            {currentPage ? currentPage.component : <div>Sem permissão</div>}
+            {currentPage ? currentPage.component :
+            <div className="justify-center w-full">
+                <div className=" flex flex-col justify-center items-center space-x-3">
+                    <Loader2 className="animate-spin w-20 h-20"/>
+                    <h2>Carregando...</h2>
+                </div>
+            </div>}
         </div>
     );
 }

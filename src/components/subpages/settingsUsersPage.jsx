@@ -17,22 +17,28 @@ export default function UsersPage(){
     const [sectors, setSectors] = useState([]);
     const [branches, setBranches] = useState([]);
     const [showSingUpUserForm, setShowSingUpUserForm] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const {register, handleSubmit} = useForm();
 
     const getInfos = async () => {
-        const response_users = await request.onGet('users');
-        const response_roles = await request.onGet('roles');
-        const response_sectors = await request.onGet('sectors');
-        const response_branches = await request.onGet('branches', "");
+        try{
+            const response_users = await request.onGet('users');
+            const response_roles = await request.onGet('roles');
+            const response_sectors = await request.onGet('sectors');
+            const response_branches = await request.onGet('branches', "");
 
-        console.log(response_users);
-
-        setUsers(response_users);
-        setRoles(response_roles.roles);
-        setSectors(response_sectors);
-        setBranches(response_branches);
+            setUsers(response_users);
+            setRoles(response_roles.roles);
+            setSectors(response_sectors);
+            setBranches(response_branches)
+        }catch(err){
+            console.log(err)
+        }finally {
+            setIsLoading(false);
+        }
     }
     useEffect(()=>{
+        setIsLoading(true);
         getInfos().then();
     },[])
 
@@ -127,14 +133,6 @@ export default function UsersPage(){
                     </div>
                 )}
             </div>
-            {users.length === 0 &&
-                <div className="justify-center h-screen w-full">
-                    <div className="w-full h-[20%] flex flex-col justify-center items-center space-x-3">
-                        <Loader2 className="animate-spin w-40 h-40"/>
-                        <h2>Carregando...</h2>
-                    </div>
-                </div>
-            }
             <div className={'grid grid-cols-1 gap-2 w-[80vw] md:w-[55vw] lg:grid-cols-2 xl:grid-cols-3'}>
                 {users.map((user) => (
                     <UserBallons
@@ -149,6 +147,14 @@ export default function UsersPage(){
                     />
                 ))}
             </div>
+            {isLoading &&
+                <div className="justify-center w-full">
+                    <div className=" flex flex-col justify-center items-center space-x-3">
+                        <Loader2 className="animate-spin w-20 h-20"/>
+                        <h2>Carregando...</h2>
+                    </div>
+                </div>
+            }
         </main>
     );
 }

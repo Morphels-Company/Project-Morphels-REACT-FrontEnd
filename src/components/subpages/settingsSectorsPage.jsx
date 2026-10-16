@@ -12,6 +12,7 @@ export default function SectorsPage() {
     const [sectors, setSectors]             = useState([]);
     const [branchesBySector, setBranchesBySector] = useState({});
     const [showForm, setShowForm]           = useState(false);
+    const [isLoading, setIsLoading ] = useState(true);
 
     const { register, handleSubmit, reset } = useForm({
         defaultValues: {
@@ -22,32 +23,42 @@ export default function SectorsPage() {
     });
 
     const fetchAll = async () => {
-        const [sectorRes, branchRes] = await Promise.all([
-            request.onGet("sectors"),
-            request.onGet("branches"),
-        ]);
-        setSectors(sectorRes ?? []);
+        try {
+            const [sectorRes, branchRes] = await Promise.all([
+                request.onGet("sectors"),
+                request.onGet("branches"),
+            ]);
+            setSectors(sectorRes ?? []);
 
-        const grouped = {};
-        (branchRes ?? []).forEach(b => {
-            if (!grouped[b.sector]) grouped[b.sector] = [];
-            grouped[b.sector].push(b);
-        });
-        setBranchesBySector(grouped);
+            const grouped = {};
+            (branchRes ?? []).forEach(b => {
+                if (!grouped[b.sector]) grouped[b.sector] = [];
+                grouped[b.sector].push(b);
+            });
+            setBranchesBySector(grouped);
+        }catch (error){
+            console.log(error);
+        }finally {
+            setIsLoading(false);
+        }
+
     };
 
-    useEffect(() => { fetchAll(); }, []);
+    useEffect(() => {
+        setIsLoading(true);
+        fetchAll().then();
+    }, []);
 
     const onCreateSector = async (data) => {
         await request.onPost("sectors", data);
         reset();
         setShowForm(false);
-        fetchAll();
+        fetchAll().then();
     };
 
     const onDeleteSector = async (id) => {
         await request.onDelete("sectors", id);
-        fetchAll();
+        fetchAll().then();
     };
 
     return (
@@ -88,6 +99,14 @@ export default function SectorsPage() {
                     />
                 ))}
             </div>
+            {isLoading &&
+                <div className="justify-center w-full">
+                    <div className=" flex flex-col justify-center items-center space-x-3">
+                        <Loader2 className="animate-spin w-20 h-20"/>
+                        <h2>Carregando...</h2>
+                    </div>
+                </div>
+            }
 
             {showForm && (
                 <div className="fixed inset-0 bg-[rgb(0,0,0,0.7)] flex items-center justify-center">
