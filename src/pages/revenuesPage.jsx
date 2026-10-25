@@ -4,8 +4,7 @@ import {useState, useEffect} from "react";
 import Header2 from "../components/header2.jsx";
 import OpenFromButton from "../components/openFromButton.jsx";
 import DataBalons from "../components/dadaBalons.jsx";
-import SearchArea from "../components/searchArea.jsx";
-import Filt from "../components/filt.jsx";
+
 import ModalRevenues from "../components/modalRevenues.jsx";
 import SideMenu from "../components/sideMenu.jsx";
 import Select from "../components/select.jsx";
@@ -24,8 +23,6 @@ function RevenuesPage() {
     const [showEditForm, setShowEditForm] = useState(false);
     const [revenues, setRevenues] = useState([]);
     const [editData, setEditData] = useState(null);
-    const [search, setSearch] = useState("")
-    const [showFilter, setShowFilter] = useState(false);
     const [members, setMembers] = useState([]);
     const [branches, setBranches] = useState([]);
     const [filted, setFilted] = useState([]);
