@@ -42,7 +42,7 @@ function ExpensesPage() {
         setShowForm(!showForm);
     };
     const [period, setPeriod] = useState({
-        start_date: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString(),
+        start_date: new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), 1)).toISOString(),
         end_date:   new Date().toISOString(),
     });
 

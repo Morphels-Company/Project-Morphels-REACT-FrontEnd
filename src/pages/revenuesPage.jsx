@@ -50,7 +50,7 @@ function RevenuesPage() {
     };
 
     const [period, setPeriod] = useState({
-        start_date: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString(),
+        start_date: new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), 1)).toISOString(),
         end_date:   new Date().toISOString(),
     });
 
@@ -60,7 +60,7 @@ function RevenuesPage() {
             const response_members = await requests.onGet("members");
             const response_branches = await requests.onGet("branches");
 
-            console.log(response_revenues.length)
+            console.log(response_revenues)
 
             setRevenues(response_revenues.length !== undefined ? response_revenues : []);
             setMembers(response_members.length !== 0 ? response_members : []);

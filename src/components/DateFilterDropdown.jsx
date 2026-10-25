@@ -8,9 +8,9 @@ function getPeriods() {
     const m     = now.getMonth();
 
     const start = (year, month, day = 1) =>
-        new Date(year, month, day).toISOString();
+        new Date(Date.UTC(year, month, day)).toISOString();
     const end = (year, month, day) =>
-        new Date(year, month, day, 23, 59, 59).toISOString();
+        new Date(Date.UTC(year, month, day, 23, 59, 59)).toISOString();
 
     const monthName = (month) =>
         new Date(y, month).toLocaleString('pt-BR', { month: 'long' })
@@ -104,7 +104,7 @@ export default function DateFilterDropdown({
             key:   'custom',
             label,
             start: new Date(customStart).toISOString(),
-            end:   new Date(customEnd + 'T23:59:59').toISOString(),
+            end:   new Date(customEnd + 'T23:59:59.999Z').toISOString(),
         };
         setSelected(period);
         setOpen(false);
