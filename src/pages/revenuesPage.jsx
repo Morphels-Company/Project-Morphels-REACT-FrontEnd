@@ -275,7 +275,7 @@ function RevenuesPage() {
                                 onDelete={async () => {
                                     try {
                                         await requests.onDelete("revenues", data.id)
-                                        fetchData().then()
+                                        fetchData(period.start_date, period.end_date).then();
                                     } catch (error) {
                                         console.log(error);
                                     }
@@ -288,7 +288,7 @@ function RevenuesPage() {
 
                         {showEditForm && (
                             <ModalRevenues
-                                onGetRevenues={() => fetchData()}
+                                onGetRevenues={() => fetchData(period.start_date, period.end_date).then()}
                                 onHideForm={() => setShowEditForm(!showEditForm)}
                                 complete={editData}
                                 branches={branches}

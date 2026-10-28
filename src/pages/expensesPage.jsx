@@ -200,7 +200,7 @@ function ExpensesPage() {
                                     }}
                                     onDelete={async () => {
                                         await requests.onDelete("expenses", data.id);
-                                        fetchData().then();
+                                        fetchData(period.start_date, period.end_date).then();
                                     }}
                                 />
                             ))
@@ -209,7 +209,7 @@ function ExpensesPage() {
 
 
                     {showEditForm && <ModalExpenses
-                        onGetExpenses={() => fetchData()}
+                        onGetExpenses={() => fetchData(period.start_date, period.end_date).then()}
                         onHideForm={() => setShowEditForm(!showEditForm)}
                         complete={editData}
                         branches={branches}
