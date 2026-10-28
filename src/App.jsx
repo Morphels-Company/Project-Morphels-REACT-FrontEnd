@@ -24,7 +24,7 @@ function App() {
         }
 }
   return(
-    <main className="flex flex-col justify-center items-center h-screen w-screen gap-4 bg-[url('../images/adebBackground.jpg')] bg-cover bg-center bg-black/30 bg-blend-darken">
+    <main className="flex flex-col justify-center items-center h-screen w-screen gap-4 bg-bg-secondary-destack-color">
       <div className="flex flex-col justify-center items-center bg-bg-primary-color backdrop-blur-md p-10 rounded-lg shadow-lg w-85 gap-4 md:w-110">
         <header className="flex flex-col justify-center items-center gap-2">
           <i className='bg-bg-secondary-color p-4 rounded-full'>

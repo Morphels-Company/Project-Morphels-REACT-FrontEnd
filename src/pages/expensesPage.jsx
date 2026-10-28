@@ -92,8 +92,8 @@ function ExpensesPage() {
             <Menu/>
 
             <div className="flex justify-center">
-                <div className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[90vw] h-[80vh] md:w-[55vw]">
-                    <section className="flex justify-between items-center">
+                <div className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[90vw] h-[90vh] md:w-[55vw] md:h-[80vh] overflow-hidden">
+                    <section className="flex justify-between items-center shrink-0">
                         <Header2
                             title={"Fomulário de despesas"}
                             description={"Formulário para adicionar despesas"}
@@ -103,23 +103,23 @@ function ExpensesPage() {
                         </div>
                     </section>
 
-                    <div className="flex">
+                    <div className="flex shrink-0">
                         <Inputs id="search_bar" type="text" placeholder="Busque pelo nome do membro"
                                 register={{...register("search_bar")}} />
 
                     </div>
-                    <div className="flex justify-end">
+                    <div className="flex justify-end shrink-0">
                         <DateFilterDropdown
                             defaultPeriodKey="this_month"
                             onApply={handlePeriodChange}
                         />
                     </div>
 
-                    <div className={`grid transition-all duration-300 ease-in-out ${
+                    <div className={`grid shrink-0 transition-all duration-300 ease-in-out ${
                         showForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                     }`}>
                         <div className="overflow-hidden">
-                            <div className="bg-bg-secondary-color p-3 rounded-sm border border-bg-secondary-destack-color shadow-md">
+                            <div className="bg-bg-secondary-color p-3 rounded-lg border border-bg-secondary-destack-color shadow-md max-h-[45vh] overflow-y-auto">
                                 <form action={handleSubmit(onSendData)} className="flex flex-col space-y-3">
                                     <section className="flex flex-col items-start">
                                         <Inputs id="title" type="text" children="Titulo" placeholder="Despesa ..."
@@ -174,7 +174,7 @@ function ExpensesPage() {
                     </div>
 
                     {/* Renderiza a lista filtrada */}
-                    <div className={"overflow-auto"}>
+                    <div className={"flex-1 min-h-0 overflow-y-auto"}>
                         {isLoading ? (
                             // 1. Se estiver carregando, mostra o loader
                             <div className=" flex flex-col justify-center items-center space-x-3">

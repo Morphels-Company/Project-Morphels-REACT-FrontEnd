@@ -1,7 +1,7 @@
 import {Document, Page, Text, View, StyleSheet, PDFViewer, Image} from "@react-pdf/renderer";
 import {Table, TR, TH, TD} from '@ag-media/react-pdf-table';
 import { createTw } from "react-pdf-tailwind";
-import {useEffect, useState} from "react";
+import {use, useEffect, useState} from "react";
 import MainRequests from "../services/requests.js";
 import { useLocation } from 'react-router-dom'
 
@@ -33,7 +33,7 @@ const InvoicePDF = ({revenues, expenses, information}) => (
                     <Image src="../images/ADEB-logo.png" source={"Logo-ADEB"} style={tw("w-[30px] h-15 ")}/>
                 </View>
                 <View style={tw("text-6xl")}>
-                    <Text>ADEB</Text>
+                    <Text>{information.institution?.name}</Text>
                 </View>
             </View>
             <View style={tw("flex flex-row text-sm justify-end items-end border border-gray-200 m-0 p-2")}>
@@ -41,8 +41,8 @@ const InvoicePDF = ({revenues, expenses, information}) => (
             </View>
             <View style={tw("flex flex-row justify-start gap-2 items-end border border-gray-200 m-0 p-2")}>
                 <View style={tw("w-full pl-[10px] text-sm")}>
-                    <Text style={tw("space-x-20")}>Igreja: {information.branch?.name}</Text>
-                    <Text>Pastor local: {information.branch?.owner}</Text>
+                    <Text style={tw("space-x-20")}>Filial: {information.branch?.name}</Text>
+                    <Text>Diretor local local: {information.branch?.owner}</Text>
                     <Text>Tesoureiro: {information.user?.name}</Text>
                 </View>
                 <View style={tw("w-full pl-[10px] text-sm")}>
@@ -154,6 +154,7 @@ export default function ReportPreset() {
             let branch_data = null;
             let sector_data = null;
             let user_data;
+            let institution_data = null;
 
             try {
 
@@ -162,6 +163,14 @@ export default function ReportPreset() {
                     report.sector ? requests.onGet(`sectors/${report.sector}`) : null,
                     report.by ? requests.onGet(`users/${report.by}`) : null
                 ]);
+
+                console.log(branch_data, sector_data);
+
+                [institution_data] = await Promise.all([
+                    branch_data.institution ? requests.onGet(`institutions/${branch_data.institution}`) : null,
+                ])
+
+                console.log(institution_data)
             } catch (error) {
                 console.log("Erro ao buscar filial/setor:", error);
             }
@@ -172,6 +181,7 @@ export default function ReportPreset() {
                 branch: (branch_data ? branch_data: []),
                 sector: (sector_data ? sector_data : []),
                 user: (user_data ? user_data : []),
+                institution: (institution_data ? institution_data : [])
                 };
 
             setInformation(updatedInformation);

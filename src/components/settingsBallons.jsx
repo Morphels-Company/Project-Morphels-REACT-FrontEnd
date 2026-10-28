@@ -10,7 +10,7 @@ export function UserBallons({user_name, email, cellphone, designation, sing_up_d
             className={"grid grid-flow-col grid-rows-[auto_1fr] w-full gap-3 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-xl p-5"}>
             <div className={"w-full flex items-center justify-start gap-3 m-0 p-0"}>
                 <section>
-                    <h1 className={'h-fit bg-black text-secondary-titles-color rounded-2xl px-2 py-1'}>JS</h1>
+                    <h1 className={'h-fit bg-black text-primery-titles-color rounded-2xl px-2 py-1'}>JS</h1>
                 </section>
                 <section className={'space-y-1'}>
                     <h2>{user_name}</h2>
@@ -95,7 +95,7 @@ export function BranchBallon({ branch, memberCount, onDelete }) {
             {/* cabeçalho */}
             <div className="w-full flex items-center justify-start gap-3">
                 <section>
-                    <span className="h-fit bg-black text-secondary-titles-color rounded-2xl px-2 py-1 text-sm font-bold">
+                    <span className="h-fit bg-black text-primery-titles-color rounded-2xl px-2 py-1 text-sm font-bold">
                         {branch.name?.slice(0, 2).toUpperCase() ?? "BR"}
                     </span>
                 </section>
@@ -151,7 +151,7 @@ export function SectorBallon({ sector, branches = [], onDelete }) {
             {/* cabeçalho */}
             <div className="w-full flex items-center justify-start gap-3">
                 <section>
-                    <span className="h-fit bg-black text-secondary-titles-color rounded-2xl px-2 py-1 text-sm font-bold">
+                    <span className="h-fit bg-black text-primery-titles-color rounded-2xl px-2 py-1 text-sm font-bold">
                         {sector.name?.slice(0, 2).toUpperCase() ?? "SE"}
                     </span>
                 </section>

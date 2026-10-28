@@ -72,7 +72,7 @@ export default function SectorsPage() {
                 <section>
                     <button
                         onClick={() => setShowForm(true)}
-                        className="flex gap-2 bg-black text-secondary-titles-color text-sm p-2 rounded-md items-center"
+                        className="flex gap-2 bg-black text-primery-titles-color text-sm p-2 rounded-md items-center"
                     >
                         <Plus size={16} />
                         <p>Novo Setor</p>
