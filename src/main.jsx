@@ -8,13 +8,15 @@ import Register from './pages/register.jsx';
 import ReportsPage from './pages/reportsPage.jsx';
 import ReportPreset from './pages/reportPreset.jsx';
 import DashBoard from './pages/dashBoard.jsx';
-// import Teste from './components/scanner.jsx'
 import InstitutionRegister from "./pages/institutionRegister.jsx";
 import {createBrowserRouter, Outlet, RouterProvider} from 'react-router-dom';
 import { WithoutPermissionProvider } from "./context/withoutPermissionContext.jsx";
 import {ValidateAuthentication} from "./services/validateAuthentication.js";
 import SettingsPage from "./pages/settingsPage.jsx";
 import Teste from './pages/Teste.jsx'
+import ToastContainer from "./components/ToastContainer.jsx";
+import ErrorFallback from "./components/ErrorFallback.jsx";
+import SessionExpired from "./pages/SessionExpired.jsx";
 
 const router = createBrowserRouter([
   // --- ROTAS PÚBLICAS ---
@@ -28,11 +30,16 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <App />,
+        errorElement: <ErrorFallback />,
       },
       {
         path: "/register/institution",
         element: <InstitutionRegister />,
       },
+      {
+        path: "/sessao-expirada",
+        element: <SessionExpired/>,
+      }
     ],
   },
 
@@ -85,5 +92,8 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
     <StrictMode>
       <RouterProvider router={router} />
+      <ToastContainer />
     </StrictMode>,
+
+
 );

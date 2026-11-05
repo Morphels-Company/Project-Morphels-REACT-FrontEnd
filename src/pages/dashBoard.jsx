@@ -1,6 +1,6 @@
 import Menu from '../components/menu.jsx';
 import Header from '../components/header.jsx';
-import Balons from '../components/balons.jsx';
+import Balloons from '../components/balloons.jsx';
 import Graphics from '../components/graphics.jsx';
 import DateFilterDropdown from '../components/DateFilterDropdown.jsx';
 import { BadgeDollarSign } from 'lucide-react';
@@ -67,17 +67,24 @@ function DashBoard() {
 
                     {/* balons */}
                     <div className="flex flex-col gap-3 md:flex-row">
-                        <Balons
+                        <Balloons
                             title={'Entradas'}
                             value={sumRevenues > 0 ? sumRevenues : 0}
-                            description={'total de entradas'}
+                            description={'Total de entradas'}
                             icon={<BadgeDollarSign />}
                             color="green"
                         />
-                        <Balons
+                        <Balloons
                             title={'Despesas'}
                             value={sumExpenses > 0 ? sumExpenses : 0}
-                            description={'total de despesas'}
+                            description={'Total de despesas'}
+                            icon={<BadgeDollarSign />}
+                            color="green"
+                        />
+                        <Balloons
+                            title={'Saldo'}
+                            value={isNaN((sumRevenues - sumExpenses)) ? 0 : (sumRevenues - sumExpenses)}
+                            description={'Total disponível'}
                             icon={<BadgeDollarSign />}
                             color="green"
                         />

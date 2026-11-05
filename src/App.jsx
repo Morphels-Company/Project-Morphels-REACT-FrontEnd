@@ -49,7 +49,7 @@ function App() {
               </div>
               <a href="#" className='text-primary-titles-color hover:underline'>Esqueci a senha</a>
             </article>
-            <button type='submit' className='bg-buttons-color hover:bg-buttons-hover text-secondary-titles-color rounded-sm p-1'>Entrar</button>
+            <button type='submit' className='bg-buttons-color hover:bg-buttons-hover focus:accent-yellow-700 text-secondary-titles-color rounded-sm p-1'>Entrar</button>
           </section>
         </form>
       </div>

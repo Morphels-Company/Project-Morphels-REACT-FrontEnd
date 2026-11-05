@@ -3,7 +3,7 @@ import Header from "../components/header.jsx";
 import { useState, useEffect } from "react";
 import Header2 from "../components/header2.jsx";
 import OpenFromButton from "../components/openFromButton.jsx";
-import DataBalons from "../components/dadaBalons.jsx";
+import DataBalloons from "../components/dadaBalons.jsx";
 import { useForm } from "react-hook-form";
 import ModalExpenses from "../components/modalExpences.jsx";
 import MainRequests from "../services/requests.js";
@@ -13,6 +13,8 @@ import Select from "../components/select.jsx";
 import Inputs from "../components/inputs.jsx";
 import { Loader2 } from "lucide-react";
 import DateFilterDropdown from "../components/DateFilterDropdown.jsx";
+import { FormateMonetaryValue } from "../services/formatService.js";
+import FormButtons from "../components/formButtons.jsx";
 
 const requests = new MainRequests()
 
@@ -21,6 +23,7 @@ function ExpensesPage() {
     const [showEditForm, setShowEditForm] = useState(false);
     const [editData, setEditData] = useState(null);
     const [expenses, setExpenses] = useState([]); // Lista completa da API
+    const [sumExpenses, setSumExpenses] = useState(0);
     const [branches, setBranches] = useState([]);
     const [isLoading, setIsLoading] = useState(true); // Estado de carregamento isolado
 
@@ -52,7 +55,14 @@ function ExpensesPage() {
             const expensesResponse = await requests.onGet(`expenses/${start_date}/${end_date}`, "");
             const branchesResponse = await requests.onGet("branches", "");
 
-            setExpenses(expensesResponse.length !== undefined ? expensesResponse : []);
+            if(expensesResponse.length !== undefined){
+                setExpenses(expensesResponse);
+                setSumExpenses(expensesResponse[0].expenses_sum);
+            }else {
+                setExpenses([]);
+                setSumExpenses(0)
+            }
+
             setBranches(branchesResponse);
         } catch (error) {
             console.error("Erro ao buscar despesas:", error);
@@ -96,7 +106,7 @@ function ExpensesPage() {
                     <section className="flex justify-between items-center shrink-0">
                         <Header2
                             title={"Fomulário de despesas"}
-                            description={"Formulário para adicionar despesas"}
+                            description={`Total: ${FormateMonetaryValue(sumExpenses)}`}
                         />
                         <div className="flex justify-center">
                             <OpenFromButton onClick={onShowForm}>{showForm ? "Fechar" : "Nova despesa"}</OpenFromButton>
@@ -164,10 +174,8 @@ function ExpensesPage() {
                                                 register={{...register("beneficiary")}} />
                                     </section>
 
-                                    <div className="w-full flex flex-row mt-4 gap-4">
-                                        <button type={"submit"} className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit</button>
-                                        <button type="button" onClick={() => setShowForm(false)} className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel</button>
-                                    </div>
+                                    <FormButtons cancelFunction={() => setShowForm(false)} />
+
                                 </form>
                             </div>
                         </div>
@@ -186,7 +194,7 @@ function ExpensesPage() {
                             <p className="text-center text-xs text-gray-400 py-4">Nenhuma receita encontrada.</p>
                         ) : (
                             filteredExpenses.map((data) => (
-                                <DataBalons
+                                <DataBalloons
                                     key={data.id}
                                     type={data.type}
                                     date={data.date}

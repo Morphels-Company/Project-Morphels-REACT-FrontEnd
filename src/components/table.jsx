@@ -1,7 +1,7 @@
 import Header2 from "./header2.jsx";
 import FormButtons from "./formButtons.jsx";
 import OpenFromButton from "./openFromButton.jsx";
-import DataBalons from "./dadaBalons.jsx";
+import DataBalloons from "./dadaBalons.jsx";
 import SearchArea from "./searchArea.jsx";
 import { Search } from "lucide-react";
 function Table({header_title, header_description, button_title, datas}) {
@@ -17,7 +17,7 @@ function Table({header_title, header_description, button_title, datas}) {
         </section>
         <SearchArea placeholder={"Search by description or member..."} />
         {datas.map((data) => (
-          <DataBalons
+          <DataBalloons
             key={data.id}
             category={data.category}
             date={data.date}

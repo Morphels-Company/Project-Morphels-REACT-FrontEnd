@@ -5,8 +5,9 @@ import {Loader2, Plus} from "lucide-react";
 import Inputs from "../inputs.jsx";
 import { useForm } from "react-hook-form"
 import Header2 from "../header2.jsx";
-import {FormateDate} from "../../services/formateDateService.js";
+import {FormateDate} from "../../services/formatService.js";
 import Select from "../select.jsx";
+import FormButtons from "../formButtons.jsx";
 
 
 const request = new MainRequests()
@@ -16,7 +17,7 @@ export default function UsersPage(){
     const [roles, setRoles] = useState([]);
     const [sectors, setSectors] = useState([]);
     const [branches, setBranches] = useState([]);
-    const [showSingUpUserForm, setShowSingUpUserForm] = useState(false);
+    const [showForm, setShowForm] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const {register, handleSubmit} = useForm();
 
@@ -56,9 +57,9 @@ export default function UsersPage(){
                     <h2 className={'text-sm text-neutral-500'}>Gerencie os usuários do sistema</h2>
                 </section>
                 <section>
-                    <button onClick={() => setShowSingUpUserForm(true)} className={'flex gap-2 bg-black text-primary-titles-color text-sm p-2 rounded-md items-center'}><Plus size={16}/> <p>Novo Usuário</p> </button>
+                    <button onClick={() => setShowForm(true)} className={'flex gap-2 bg-black text-primary-titles-color text-sm p-2 rounded-md items-center'}><Plus size={16}/> <p>Novo Usuário</p> </button>
                 </section>
-                {showSingUpUserForm && (
+                {showForm && (
                     <div className="fixed inset-0 bg-[rgb(0,0,0,0.7)] bg-opacity-50 flex items-center justify-center">
                         <div className="flex flex-col bg-bg-secondary-color w-[80%] md:w-[55%] p-6 rounded-lg shadow-lg space-y-4">
                             <div className="">
@@ -119,14 +120,7 @@ export default function UsersPage(){
                                         </div>
                                     </section>
 
-                                    <div className="w-full flex flex-row mt-4 gap-4 ">
-                                        <button type="submit"
-                                                className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit
-                                        </button>
-                                        <button onClick={() => setShowSingUpUserForm(false)}
-                                                className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel
-                                        </button>
-                                    </div>
+                                    <FormButtons cancelFunction={() => { reset(); setShowForm(false); }} />
                                 </form>
                             </div>
                         </div>

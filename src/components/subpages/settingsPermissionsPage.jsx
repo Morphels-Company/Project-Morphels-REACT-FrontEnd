@@ -6,6 +6,7 @@ import Inputs from "../inputs.jsx";
 import { useForm,useFieldArray } from "react-hook-form"
 import Header2 from "../header2.jsx";
 import Select from "../select.jsx";
+import FormButtons from "../formButtons.jsx";
 
 const request = new MainRequests()
 
@@ -13,7 +14,7 @@ export default function PermissionsPage(){
     const [roles, setRoles] = useState([]);
     const [pages, setPages] = useState([]);
     const [numberOfPages, setNumberOfPages] = useState(0);
-    const [showSingUpUserForm, setShowSingUpUserForm] = useState(false);
+    const [showForm, setShowForm] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const {register, control, handleSubmit, setValue} = useForm({
         defaultValues: {
@@ -87,9 +88,9 @@ export default function PermissionsPage(){
                     <h2 className={'text-sm text-neutral-500'}>Gerencie as permissões do sistema</h2>
                 </section>
                 <section>
-                    <button onClick={() => setShowSingUpUserForm(true)} className={'flex gap-2 bg-black text-primery-titles-color text-sm p-2 rounded-md items-center'}><Plus size={16}/> <p>Nova Permissão</p> </button>
+                    <button onClick={() => setShowForm(true)} className={'flex gap-2 bg-black text-primery-titles-color text-sm p-2 rounded-md items-center'}><Plus size={16}/> <p>Nova Permissão</p> </button>
                 </section>
-                {showSingUpUserForm && (
+                {showForm && (
                     <div className="fixed inset-0 bg-[rgb(0,0,0,0.7)] bg-opacity-50 flex items-center justify-center">
                         <div className="flex flex-col bg-bg-secondary-color h-[70%] w-[80%] md:w-[33%] p-6 rounded-lg shadow-lg space-y-4 overflow-auto">
                             <div className="">
@@ -156,17 +157,7 @@ export default function PermissionsPage(){
                                         )
                                     })}
 
-
-
-
-                                    <div className="w-full flex flex-row mt-4 gap-4 ">
-                                        <button type="submit"
-                                                className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit
-                                        </button>
-                                        <button onClick={() => setShowSingUpUserForm(false)}
-                                                className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel
-                                        </button>
-                                    </div>
+                                    <FormButtons cancelFunction={() => { reset(); setShowForm(false); }} />
                                 </form>
                             </div>
                         </div>
