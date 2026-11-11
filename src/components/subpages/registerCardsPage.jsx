@@ -25,7 +25,7 @@ export function CardsPage() {
     const [cards, setCards] = useState([])
     const [members, setMembers] = useState([]);
     const [showOptions, setShowOptions] = useState(false);
-    const [showCardsForm, setShowCardsForm] = useState(false)
+    const [showForm, setShowForm] = useState(false)
     const [searchCards, setSearchCards] = useState([])
     const [showScanner, setShowScanner] = useState(false)
     const [filted, setFilted] = useState([])
@@ -85,13 +85,10 @@ export function CardsPage() {
                             title={"Formulário de cartões"}
                             description={"Formulário para cadastrar cartões de fidelidade"}
                         />
-                        <div className="flex justify-center">
-                            <OpenFromButton
-                                onClick={() => setShowCardsForm(!showCardsForm)}>{showCardsForm ? "Cancelar" : "Novo cartão"}</OpenFromButton>
-                        </div>
+                        <OpenFromButton onClick={() => setShowForm(!showForm)}>{showForm ? "Fechar" : "Nova despesa"}</OpenFromButton>
                     </section>
                     <div className={`grid transition-all duration-300 ease-in-out ${
-                        showCardsForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                        showForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                     }`}>
                         <div className="overflow-hidden">
                             <form action={() => handleSubmit(async (data) => {

@@ -13,7 +13,6 @@ import {createBrowserRouter, Outlet, RouterProvider} from 'react-router-dom';
 import { WithoutPermissionProvider } from "./context/withoutPermissionContext.jsx";
 import {ValidateAuthentication} from "./services/validateAuthentication.js";
 import SettingsPage from "./pages/settingsPage.jsx";
-import Teste from './pages/Teste.jsx'
 import ToastContainer from "./components/ToastContainer.jsx";
 import ErrorFallback from "./components/ErrorFallback.jsx";
 import SessionExpired from "./pages/SessionExpired.jsx";
@@ -80,10 +79,6 @@ const router = createBrowserRouter([
       {
         path: "/reports/local",
         element: <ReportPreset />,
-      },
-      {
-        path: "/teste",
-        element: <Teste />,
       },
     ],
   },

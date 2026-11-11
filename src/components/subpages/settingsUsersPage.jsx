@@ -57,7 +57,7 @@ export default function UsersPage(){
                     <h2 className={'text-sm text-neutral-500'}>Gerencie os usuários do sistema</h2>
                 </section>
                 <section>
-                    <button onClick={() => setShowForm(true)} className={'flex gap-2 bg-black text-primary-titles-color text-sm p-2 rounded-md items-center'}><Plus size={16}/> <p>Novo Usuário</p> </button>
+                    <button onClick={() => setShowForm(true)} className={'flex gap-2 bg-black text-white text-sm p-2 rounded-md items-center'}><Plus size={16}/> <p>Novo Usuário</p> </button>
                 </section>
                 {showForm && (
                     <div className="fixed inset-0 bg-[rgb(0,0,0,0.7)] bg-opacity-50 flex items-center justify-center">

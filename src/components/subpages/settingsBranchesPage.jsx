@@ -65,7 +65,7 @@ export default function BranchesPage() {
                 <section>
                     <button
                         onClick={() => setShowForm(true)}
-                        className="flex gap-2 bg-black text-primery-titles-color text-sm p-2 rounded-md items-center"
+                        className="flex gap-2 bg-black text-white text-sm p-2 rounded-md items-center"
                     >
                         <Plus size={16} />
                         <p>Nova Filial</p>

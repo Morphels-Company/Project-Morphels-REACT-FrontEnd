@@ -12,7 +12,7 @@ const requests = new MainRequests()
 
 export function MemberPage(){
     const [members, setMembers] = useState([])
-    const [showMemberForm, setShowMemberForm] = useState(false)
+    const [showForm, setShowForm] = useState(false)
     const [searchMembers, setSearchMembers] = useState("")
     const [branches, setBranches] = useState([])
     const [isLoading, setIsLoading] = useState(true);
@@ -72,14 +72,11 @@ export function MemberPage(){
                             title={"Formulário de membros"}
                             description={"Formulário para cadastrar membros"}
                         />
-                        <div className="flex justify-center">
-                            <OpenFromButton
-                                onClick={() => setShowMemberForm(!showMemberForm)}>{showMemberForm ? "Cancelar" : "Novo Membro"}</OpenFromButton>
-                        </div>
+                        <OpenFromButton onClick={() => setShowForm(!showForm)}>{showForm ? "Fechar" : "Novo Membro"}</OpenFromButton>
                     </section>
 
                     <div className={`grid transition-all duration-300 ease-in-out ${
-                        showMemberForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                        showForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                     }`}>
                         <div className="overflow-hidden">
                             <form action={() => handleSubmit(async (data) => {

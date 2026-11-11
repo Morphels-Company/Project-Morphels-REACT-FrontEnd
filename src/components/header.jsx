@@ -1,6 +1,6 @@
 import { Church, Menu } from 'lucide-react'
 import { useMenu } from "../context/menuContext.jsx";
-import ThemeToggle from './themeToggle.jsx'
+// import ThemeToggle from './themeToggle.jsx'
 
 function Header() {
   const { toggleMenu } = useMenu();
@@ -18,7 +18,7 @@ function Header() {
               <p className='text-sm text-gray-600'>ADEB</p>
             </div>
           </nav>
-          <ThemeToggle/>
+          {/*<ThemeToggle/>*/}
         </section>
       </div>
     </>

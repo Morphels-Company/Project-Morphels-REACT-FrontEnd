@@ -1,18 +1,14 @@
-import Menu from "../components/menu.jsx";
-import Header from "../components/header.jsx";
+import AppLayout from "../components/appLayout.jsx";
 import {useState, useEffect} from "react";
 import Header2 from "../components/header2.jsx";
 import OpenFromButton from "../components/openFromButton.jsx";
 import DataBalloons from "../components/dadaBalons.jsx";
-
 import ModalRevenues from "../components/modalRevenues.jsx";
-import SideMenu from "../components/sideMenu.jsx";
 import Select from "../components/select.jsx";
-import { MenuProvider } from "../context/menuContext.jsx";
 import {useForm} from "react-hook-form";
 import MainRequests from "../services/requests.js";
 import Inputs from "../components/inputs.jsx";
-import { Loader2 } from "lucide-react";
+import {Loader2, Receipt} from "lucide-react";
 import DateFilterDropdown from "../components/DateFilterDropdown.jsx";
 import {FormateMonetaryValue} from "../services/formatService.js";
 import FormButtons from "../components/formButtons.jsx";
@@ -24,7 +20,6 @@ function RevenuesPage() {
     [showOptions, setShowOptions] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
     const [revenues, setRevenues] = useState([]);
-    const [sumRevenues, setSumRevenues] = useState(0);
     const [editData, setEditData] = useState(null);
     const [members, setMembers] = useState([]);
     const [branches, setBranches] = useState([]);
@@ -62,10 +57,8 @@ function RevenuesPage() {
 
             if (response_revenues.length !== undefined ){
                 setRevenues(response_revenues);
-                setSumRevenues(response_revenues[0].revenues_sum);
             }else{
                 setRevenues([]);
-                setSumRevenues(0);
             }
 
             setMembers(response_members.length !== 0 ? response_members : []);
@@ -92,6 +85,11 @@ function RevenuesPage() {
             revenue.member.toLowerCase().includes(searchBarTerm.toLowerCase()))
         : revenues;
 
+    const sumRevenues = filteredRevenues.reduce(
+        (acumulado, objetoAtual) => acumulado + parseFloat(objetoAtual.value),
+        0
+    );
+
     useEffect(() => {
         if (searchTerm && searchTerm.length > 0) {
             const result = members.filter((member) =>
@@ -117,12 +115,11 @@ function RevenuesPage() {
     // Tela de carregamento inicial real baseada no estado isLoading
 
     return (
-        <div className="justify-center h-screen w-full">
-            <MenuProvider>
-                <Header/>
-                <SideMenu/>
-            </MenuProvider>
-            <Menu/>
+        <AppLayout
+            title="Receitas"
+            icon={<Receipt size={16}/>}
+            orgName="ADEB"
+        >
 
             <div className="flex justify-center">
                 <div className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[90vw] h-[90vh] md:w-[55vw] md:h-[80vh] overflow-hidden">
@@ -132,9 +129,7 @@ function RevenuesPage() {
                             description={`Total: ${FormateMonetaryValue(sumRevenues)}`}
                         />
                         <div className="flex justify-center ">
-                            <OpenFromButton onClick={onShowForm}>
-                                {"Nova receita"}
-                            </OpenFromButton>
+                            <OpenFromButton onClick={onShowForm}>{showForm ? "Fechar" : "Nova Receita"}</OpenFromButton>
                         </div>
                     </section>
 
@@ -290,7 +285,7 @@ function RevenuesPage() {
                         )}
                 </div>
             </div>
-        </div>
+        </AppLayout>
     );
 }
 

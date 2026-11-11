@@ -4,6 +4,10 @@ import { showToast } from "../context/toastStore.js";
 const api = axios.create({
     baseURL: import.meta.env.VITE_DATABASE_URL_ROOT,
     withCredentials: true,
+    headers:{
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'fetch',
+    }
 });
 
 api.interceptors.response.use(

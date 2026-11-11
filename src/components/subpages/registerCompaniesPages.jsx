@@ -23,7 +23,7 @@ const requests = new MainRequests()
 
 export function CompaniesPage(){
     const [companies, setCompanies] = useState([])
-    const [showCompaniesForm, setShowCompaniesForm] = useState(false)
+    const [showForm, setShowForm] = useState(false)
     const [selectedCompanyInfo, setSelectedCompanyInfo] = useState(null);
     const [showInfo, setShowInfo] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -72,14 +72,11 @@ export function CompaniesPage(){
                         title={"Fomulário de companias"}
                         description={"Formulário de cadastro de companias"}
                     />
-                    <div className="flex justify-center">
-                        <OpenFromButton
-                            onClick={() => setShowCompaniesForm(!showCompaniesForm)}>{showCompaniesForm ? "Cancelar" : "Nova Empresa"}</OpenFromButton>
-                    </div>
+                    <OpenFromButton onClick={() => setShowForm(!showForm)}>{showForm ? "Fechar" : "Nova Compania"}</OpenFromButton>
                 </section>
 
                 <div className={`grid transition-all duration-300 ease-in-out ${
-                    showCompaniesForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                    showForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                 }`}>
                     <div className="overflow-hidden">
 

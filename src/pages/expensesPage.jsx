@@ -1,5 +1,3 @@
-import Menu from "../components/menu.jsx";
-import Header from "../components/header.jsx";
 import { useState, useEffect } from "react";
 import Header2 from "../components/header2.jsx";
 import OpenFromButton from "../components/openFromButton.jsx";
@@ -7,14 +5,13 @@ import DataBalloons from "../components/dadaBalons.jsx";
 import { useForm } from "react-hook-form";
 import ModalExpenses from "../components/modalExpences.jsx";
 import MainRequests from "../services/requests.js";
-import { MenuProvider } from "../context/menuContext.jsx";
-import SideMenu from "../components/sideMenu.jsx";
 import Select from "../components/select.jsx";
 import Inputs from "../components/inputs.jsx";
-import { Loader2 } from "lucide-react";
+import {Receipt, Loader2} from "lucide-react";
 import DateFilterDropdown from "../components/DateFilterDropdown.jsx";
 import { FormateMonetaryValue } from "../services/formatService.js";
 import FormButtons from "../components/formButtons.jsx";
+import AppLayout from "../components/appLayout.jsx";
 
 const requests = new MainRequests()
 
@@ -23,7 +20,6 @@ function ExpensesPage() {
     const [showEditForm, setShowEditForm] = useState(false);
     const [editData, setEditData] = useState(null);
     const [expenses, setExpenses] = useState([]); // Lista completa da API
-    const [sumExpenses, setSumExpenses] = useState(0);
     const [branches, setBranches] = useState([]);
     const [isLoading, setIsLoading] = useState(true); // Estado de carregamento isolado
 
@@ -57,10 +53,8 @@ function ExpensesPage() {
 
             if(expensesResponse.length !== undefined){
                 setExpenses(expensesResponse);
-                setSumExpenses(expensesResponse[0].expenses_sum);
             }else {
                 setExpenses([]);
-                setSumExpenses(0)
             }
 
             setBranches(branchesResponse);
@@ -93,13 +87,17 @@ function ExpensesPage() {
             expense.title.toLowerCase().includes(searchBarTerm.toLowerCase()))
         : expenses;
 
+    const sumExpenses = filteredExpenses.reduce(
+        (acumulado, objetoAtual) => acumulado + parseFloat(objetoAtual.value),
+        0
+    );
+
     return (
-        <div className="justify-center h-[90vh] w-screen">
-            <MenuProvider>
-                <Header/>
-                <SideMenu/>
-            </MenuProvider>
-            <Menu/>
+        <AppLayout
+            title="Despesas"
+            icon={<Receipt size={16}/>}
+            orgName="ADEB"
+        >
 
             <div className="flex justify-center">
                 <div className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[90vw] h-[90vh] md:w-[55vw] md:h-[80vh] overflow-hidden">
@@ -224,7 +222,7 @@ function ExpensesPage() {
                     />}
                 </div>
             </div>
-        </div>
+        </AppLayout>
     );
 }
 
