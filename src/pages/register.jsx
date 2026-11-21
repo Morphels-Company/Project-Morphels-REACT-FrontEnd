@@ -1,12 +1,9 @@
-import Menu from "../components/menu.jsx"
-import Header from "../components/header.jsx";
-import {Users, Building2, IdCard} from "lucide-react";
+import AppLayout from "../components/appLayout.jsx";
+import {Users, Building2, IdCard, FileText} from "lucide-react";
 import {useState} from "react";
 import {MemberPage} from "../components/subpages/registerMerbersPage.jsx";
 import {CompaniesPage} from "../components/subpages/registerCompaniesPages.jsx";
 import {CardsPage} from "../components/subpages/registerCardsPage.jsx";
-import {MenuProvider} from "../context/menuContext.jsx";
-import SideMenu from "../components/sideMenu.jsx";
 
 function Register() {
     const [activePage, setActivePage] = useState(1);
@@ -21,12 +18,11 @@ function Register() {
     const currentPage = pages.find(p => p.permission === activePage && permissions.includes(p.permission));
 
     return (
-        <div className="justify-center h-[90vh] w-screen">
-            <MenuProvider>
-                <Header/>
-                <SideMenu/>
-            </MenuProvider>
-            <Menu/>
+        <AppLayout
+            title="Register"
+            icon={<Users size={16}/>}
+            orgName="ADEB"
+        >
 
             <section className="flex justify-center items-center mt-7">
                 <ul className="flex flex-row bg-bg-secondary-color rounded-sm items-center shadow-lg w-[80vw] md:w-[55vw]">
@@ -47,7 +43,7 @@ function Register() {
             </section>
 
             {currentPage ? currentPage.component : <div>Sem permissão</div>}
-        </div>
+        </AppLayout>
     );
 }
 

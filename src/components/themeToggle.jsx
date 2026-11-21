@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Moon, Sun } from 'lucide-react'
-
 
 export default function ThemeToggle () {
     const [theme, setTheme] = useState(() => {
@@ -28,10 +26,5 @@ export default function ThemeToggle () {
         });
     };
 
-    return (
-        <button onClick={toggleTheme}>
-            {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
-
-        </button>
-    )
+    return toggleTheme()
 }

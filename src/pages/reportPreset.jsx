@@ -1,22 +1,23 @@
-import {Document, Page, Text, View, StyleSheet, PDFViewer, Image} from "@react-pdf/renderer";
+import {Document, Page, Text, View, StyleSheet, PDFViewer, Image, Font} from "@react-pdf/renderer";
+
 import {Table, TR, TH, TD} from '@ag-media/react-pdf-table';
 import { createTw } from "react-pdf-tailwind";
 import {use, useEffect, useState} from "react";
 import MainRequests from "../services/requests.js";
 import { useLocation } from 'react-router-dom'
+import {FormateMonetaryValue} from "../services/formatService.js";
+
+Font.registerHyphenationCallback((word) => [word]);
 
 // The 'theme' object is your Tailwind theme config
-const th_style = " text-sm justify-center p-1 border-gray-200";
-const td_style = " text-xs items-center justify-center border-gray-200 p-1"
+const th_style = "flex-1 text-sm justify-center p-1 border-gray-200";
+const td_style = "flex-1 text-xs items-start justify-center border-gray-200 p-1"
 const requests = new MainRequests()
 const on_revenues = true
 
 
 const tw = createTw({
     theme: {
-        fontFamily: {
-            sans: ["Comic Sans"],
-        },
         extend: {
             colors: {
                 custom: "#bada55",
@@ -24,6 +25,59 @@ const tw = createTw({
         },
     },
 });
+
+const s = StyleSheet.create({
+    table: { borderWidth: 1, borderColor: "#e5e7eb", borderRadius: 4 },
+    row: {
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: 4,
+        paddingHorizontal: 6,
+        borderBottomWidth: 1,
+        borderBottomColor: "#f3f4f6",
+    },
+    rowAlt: { backgroundColor: "#fafafa" },
+    head: { backgroundColor: "#f3f4f6" },
+    cell: { fontSize: 9, color: "#111827" },
+    cellBold: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#111827" },
+    colName: { flex: 3, textAlign: "left", paddingRight: 8 },
+    colDate: { flex: 1.2, textAlign: "center" },
+    colValue: { flex: 1.5, textAlign: "right" },
+    col: {flex: 1, textAlign: "center"}
+});
+
+const formatDate = (d) =>
+    new Date(d).toLocaleDateString("pt-BR", {
+        timeZone: "UTC",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+    });
+
+const DataTable = ({ rows, nameKey, total }) => (
+    <View style={s.table}>
+        <View style={[s.row, s.head]}>
+            <Text style={[s.cellBold, s.colName]}>Nome</Text>
+            <Text style={[s.cellBold, s.colDate]}>Data</Text>
+            <Text style={[s.cellBold, s.colValue]}>Valor</Text>
+        </View>
+
+        {rows.map((row, i) => (
+            // wrap={false}: uma linha nunca é cortada ao meio entre duas páginas
+            <View key={row.id} style={[s.row, i % 2 ? s.rowAlt : {}]} wrap={false}>
+                <Text style={[s.cell, s.colName]}>{row[nameKey]}</Text>
+                <Text style={[s.cell, s.colDate]}>{formatDate(row.date)}</Text>
+                <Text style={[s.cell, s.colValue]}>{FormateMonetaryValue(row.value)}</Text>
+            </View>
+        ))}
+
+        <View style={[s.row, s.head]} wrap={false}>
+            <Text style={[s.cellBold, s.colName]}>TOTAL</Text>
+            <Text style={[s.cellBold, s.colDate]}></Text>
+            <Text style={[s.cellBold, s.colValue]}>{FormateMonetaryValue(total)}</Text>
+        </View>
+    </View>
+);
 
 const InvoicePDF = ({revenues, expenses, information}) => (
     <Document>
@@ -52,78 +106,33 @@ const InvoicePDF = ({revenues, expenses, information}) => (
             </View>
             <View style={tw("border border-gray-200 m-0 p-2 gap-6")}>
                 {information.items?.resume &&(
-                    <View>
-                        <Table style={tw("w-full")}>
-                            <TH>
-                                <TD style={tw(th_style)}>Total Receitas</TD>
-                                <TD style={tw(th_style)}>Total Gastos</TD>
-                                <TD style={tw(th_style)}>Saldo</TD>
-                            </TH>
-                            <TR>
-                                <TD style={tw(td_style)}>R$ {revenues[0]?.revenues_sum !== undefined ? revenues[0].revenues_sum : 0 }</TD>
-                                <TD style={tw(td_style)}>R$ {expenses[0]?.expenses_sum !== undefined ? expenses[0].expenses_sum : 0}</TD>
-                                <TD style={tw(td_style)}>R$ {((revenues[0]?.revenues_sum !== undefined ? parseFloat(revenues[0].revenues_sum) : 0) - (expenses[0]?.expenses_sum !== undefined ? parseFloat(expenses[0].expenses_sum) : 0)).toFixed(2)}</TD>
-                            </TR>
-                        </Table>
+                    <View style={s.table}>
+                        <View style={[s.row, s.head]}>
+                            <Text style={[s.cellBold, s.col]}>Total Receitas</Text>
+                            <Text style={[s.cellBold, s.col]}>Total Gastos</Text>
+                            <Text style={[s.cellBold, s.col]}>Saldo</Text>
+                        </View>
+                        <View style={[s.row]} wrap={false}>
+                            <Text style={[s.cell, s.col]}>{revenues[0]?.revenues_sum !== undefined ? FormateMonetaryValue(revenues[0].revenues_sum) : 0 }</Text>
+                            <Text style={[s.cell, s.col]}>{expenses[0]?.expenses_sum !== undefined ? FormateMonetaryValue(expenses[0].expenses_sum) : 0}</Text>
+                            <Text style={[s.cell, s.col]}>{FormateMonetaryValue(((revenues[0]?.revenues_sum !== undefined ? parseFloat(revenues[0].revenues_sum) : 0) - (expenses[0]?.expenses_sum !== undefined ? parseFloat(expenses[0].expenses_sum) : 0)).toFixed(2))}</Text>
+                        </View>
                     </View>
                 )}
 
-                {revenues.length !== 0 && information.items?.revenues && (<View>
-                    <Text style={tw("text-lg ")}>Receitas</Text>
-                    <Table style={tw("w-full")}>
-                        <TH>
-                            <TD style={tw(th_style)}>nome</TD>
-                            <TD style={tw(th_style)}>data</TD>
-                            <TD style={tw(th_style)}>valor</TD>
-                        </TH>
-                        {revenues?.length > 0 && revenues.map((revenue) => (
+                {revenues.length > 0 && information.items?.revenues && (
+                    <View>
+                        <Text style={tw("text-lg mb-2")}>Receitas</Text>
+                        <DataTable rows={revenues} nameKey="member" total={revenues[0]?.revenues_sum} />
+                    </View>
+                )}
 
-                            <TR key={revenue.id}>
-                                <TD style={tw(td_style)}>{revenue.member}</TD>
-                                <TD style={tw(td_style)}>
-                                    {new Date(revenue.date).toLocaleDateString("pt-BR", {
-                                        timeZone: "UTC",
-                                        day: "2-digit",
-                                        month: "2-digit",
-                                        year: "numeric",
-                                    })}</TD>
-                                <TD style={tw(td_style)}>R${revenue.value}</TD>
-                            </TR>
-                        ))}
-                        <TR>
-                            <TD style={tw("flex-1 px-2 text-xs items-center justify-center border-gray-200")}>TOTAL</TD>
-                            <TD style={tw(td_style)}>R$ {revenues[0]?.revenues_sum}</TD>
-                        </TR>
-                    </Table>
-                </View>)}
-                {expenses?.length > 0 && information.items?.expenses && (<View>
-                    <Text style={tw("text-lg ")}>Gastos</Text>
-                    <Table style={tw("w-full")}>
-                        <TH>
-                            <TD style={tw(th_style)}>nome</TD>
-                            <TD style={tw(th_style)}>data</TD>
-                            <TD style={tw(th_style)}>valor</TD>
-                        </TH>
-                        {expenses.map((expense) => (
-                            <TR key={expense.id} >
-                                <TD style={tw(td_style)}>{expense.title}</TD>
-                                <TD style={tw(td_style)}>
-                                    {new Date(expense.date).toLocaleDateString("pt-BR", {
-                                        timeZone: "UTC",
-                                        day: "2-digit",
-                                        month: "2-digit",
-                                        year: "numeric",
-                                    })}</TD>
-                                <TD style={tw(td_style)}>R$ {expense.value}</TD>
-                            </TR>
-                        ))}
-
-                        <TR>
-                            <TD style={tw("flex-1 px-2 text-xs items-center justify-center border-gray-200")}>TOTAL</TD>
-                            <TD style={tw(td_style)}>R$ {expenses[0]?.expenses_sum}</TD>
-                        </TR>
-                    </Table>
-                </View>)}
+                {expenses?.length > 0 && information.items?.expenses && (
+                    <View>
+                        <Text style={tw("text-lg mb-2")}>Gastos</Text>
+                        <DataTable rows={expenses} nameKey="title" total={expenses[0]?.expenses_sum} />
+                    </View>
+                )}
             </View>
 
         </Page>
@@ -224,7 +233,7 @@ export default function ReportPreset() {
 
     return (
         <div className="h-full w-full">
-            {console.log(information.branch?.owner)}
+            {console.log(information.institution)}
             <PDFViewer style={tw("h-[100%] w-[100%]")}>
                 <InvoicePDF revenues={revenues} expenses={expenses} information={information} />
             </PDFViewer>

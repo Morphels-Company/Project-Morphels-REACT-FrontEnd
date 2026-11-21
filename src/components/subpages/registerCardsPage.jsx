@@ -13,6 +13,7 @@ import MainRequests from "../../services/requests.js";
 import {useForm} from "react-hook-form";
 import Scanner from "../scanner.jsx";
 import Select from "../select.jsx";
+import FormButtons from "../formButtons.jsx";
 
 const requests = new MainRequests()
 
@@ -23,9 +24,8 @@ const requests = new MainRequests()
 export function CardsPage() {
     const [cards, setCards] = useState([])
     const [members, setMembers] = useState([]);
-    const [showForm, setShowForm] = useState(false),
-        [showOptions, setShowOptions] = useState(false);
-    const [showCardsForm, setShowCardsForm] = useState(false)
+    const [showOptions, setShowOptions] = useState(false);
+    const [showForm, setShowForm] = useState(false)
     const [searchCards, setSearchCards] = useState([])
     const [showScanner, setShowScanner] = useState(false)
     const [filted, setFilted] = useState([])
@@ -85,13 +85,10 @@ export function CardsPage() {
                             title={"Formulário de cartões"}
                             description={"Formulário para cadastrar cartões de fidelidade"}
                         />
-                        <div className="flex justify-center">
-                            <OpenFromButton
-                                onClick={() => setShowCardsForm(!showCardsForm)}>{showCardsForm ? "Cancelar" : "Novo cartão"}</OpenFromButton>
-                        </div>
+                        <OpenFromButton onClick={() => setShowForm(!showForm)}>{showForm ? "Fechar" : "Nova despesa"}</OpenFromButton>
                     </section>
                     <div className={`grid transition-all duration-300 ease-in-out ${
-                        showCardsForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                        showForm ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                     }`}>
                         <div className="overflow-hidden">
                             <form action={() => handleSubmit(async (data) => {
@@ -153,14 +150,7 @@ export function CardsPage() {
                                 </section>
 
 
-                                <div className="w-full flex flex-row mt-4 gap-4 ">
-                                    <button type="submit"
-                                            className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit
-                                    </button>
-                                    <button onClick={() => setShowCardsForm(false)}
-                                            className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel
-                                    </button>
-                                </div>
+                                <FormButtons cancelFunction={() => setShowCardsForm(false)} />
                             </form>
                             {showScanner && <Scanner hidden={() => setShowScanner(false)} code={setValue}/>}
                         </div>

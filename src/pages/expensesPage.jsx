@@ -1,18 +1,17 @@
-import Menu from "../components/menu.jsx";
-import Header from "../components/header.jsx";
 import { useState, useEffect } from "react";
 import Header2 from "../components/header2.jsx";
 import OpenFromButton from "../components/openFromButton.jsx";
-import DataBalons from "../components/dadaBalons.jsx";
+import DataBalloons from "../components/dadaBalons.jsx";
 import { useForm } from "react-hook-form";
 import ModalExpenses from "../components/modalExpences.jsx";
 import MainRequests from "../services/requests.js";
-import { MenuProvider } from "../context/menuContext.jsx";
-import SideMenu from "../components/sideMenu.jsx";
 import Select from "../components/select.jsx";
 import Inputs from "../components/inputs.jsx";
-import { Loader2 } from "lucide-react";
+import {Receipt, Loader2} from "lucide-react";
 import DateFilterDropdown from "../components/DateFilterDropdown.jsx";
+import { FormateMonetaryValue } from "../services/formatService.js";
+import FormButtons from "../components/formButtons.jsx";
+import AppLayout from "../components/appLayout.jsx";
 
 const requests = new MainRequests()
 
@@ -52,7 +51,12 @@ function ExpensesPage() {
             const expensesResponse = await requests.onGet(`expenses/${start_date}/${end_date}`, "");
             const branchesResponse = await requests.onGet("branches", "");
 
-            setExpenses(expensesResponse.length !== undefined ? expensesResponse : []);
+            if(expensesResponse.length !== undefined){
+                setExpenses(expensesResponse);
+            }else {
+                setExpenses([]);
+            }
+
             setBranches(branchesResponse);
         } catch (error) {
             console.error("Erro ao buscar despesas:", error);
@@ -83,20 +87,24 @@ function ExpensesPage() {
             expense.title.toLowerCase().includes(searchBarTerm.toLowerCase()))
         : expenses;
 
+    const sumExpenses = filteredExpenses.reduce(
+        (acumulado, objetoAtual) => acumulado + parseFloat(objetoAtual.value),
+        0
+    );
+
     return (
-        <div className="justify-center h-[90vh] w-screen">
-            <MenuProvider>
-                <Header/>
-                <SideMenu/>
-            </MenuProvider>
-            <Menu/>
+        <AppLayout
+            title="Despesas"
+            icon={<Receipt size={16}/>}
+            orgName="ADEB"
+        >
 
             <div className="flex justify-center">
                 <div className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[90vw] h-[90vh] md:w-[55vw] md:h-[80vh] overflow-hidden">
                     <section className="flex justify-between items-center shrink-0">
                         <Header2
                             title={"Fomulário de despesas"}
-                            description={"Formulário para adicionar despesas"}
+                            description={`Total: ${FormateMonetaryValue(sumExpenses)}`}
                         />
                         <div className="flex justify-center">
                             <OpenFromButton onClick={onShowForm}>{showForm ? "Fechar" : "Nova despesa"}</OpenFromButton>
@@ -164,10 +172,8 @@ function ExpensesPage() {
                                                 register={{...register("beneficiary")}} />
                                     </section>
 
-                                    <div className="w-full flex flex-row mt-4 gap-4">
-                                        <button type={"submit"} className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete">Submit</button>
-                                        <button type="button" onClick={() => setShowForm(false)} className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete">Cancel</button>
-                                    </div>
+                                    <FormButtons cancelFunction={() => setShowForm(false)} />
+
                                 </form>
                             </div>
                         </div>
@@ -186,7 +192,7 @@ function ExpensesPage() {
                             <p className="text-center text-xs text-gray-400 py-4">Nenhuma receita encontrada.</p>
                         ) : (
                             filteredExpenses.map((data) => (
-                                <DataBalons
+                                <DataBalloons
                                     key={data.id}
                                     type={data.type}
                                     date={data.date}
@@ -216,7 +222,7 @@ function ExpensesPage() {
                     />}
                 </div>
             </div>
-        </div>
+        </AppLayout>
     );
 }
 

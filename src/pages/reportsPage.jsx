@@ -1,17 +1,13 @@
-import Menu from "../components/menu.jsx"
-import Header from "../components/header.jsx";
-import {BadgeDollarSign, Loader2, Search, Trash2} from "lucide-react";
+import AppLayout from "../components/appLayout.jsx";
+import {FileText, Loader2, Trash2} from "lucide-react";
 import Header2 from "../components/header2.jsx";
-import SearchBar from "../components/searchBar.jsx";
 import {useEffect, useState} from "react";
 import OpenFromButton from "../components/openFromButton.jsx";
 import SearchArea from "../components/searchArea.jsx";
 import ModalReports from "../components/modalReports.jsx";
 import MainRequests from "../services/requests.js";
 import {ArrowDownToLine} from "lucide-react";
-import {useNavigate, useNavigation} from "react-router-dom";
-import {MenuProvider} from "../context/menuContext.jsx";
-import SideMenu from "../components/sideMenu.jsx";
+import {useNavigate} from "react-router-dom";
 
 const request = new MainRequests()
 function ReportsPage() {
@@ -48,14 +44,14 @@ function ReportsPage() {
     }
 
   return (
-      <div className='justify-center h-[90vh] w-screen'>
-          <MenuProvider>
-              <Header/>
-              <SideMenu/>
-          </MenuProvider>
-          <Menu/>
+      <AppLayout
+          title="Despesas"
+          icon={<FileText size={16}/>}
+          orgName="ADEB"
+      >
 
-          <div className="flex justify-center">
+
+      <div className="flex justify-center">
               <div className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[80vw] h-[60vh] md:w-[55vw]">
                   <section className="flex justify-between items-center">
                       <Header2
@@ -144,6 +140,6 @@ function ReportsPage() {
                   )}
               </div>
           </div>
-      </div>
+      </AppLayout>
   )}
 export default ReportsPage;

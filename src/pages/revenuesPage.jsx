@@ -1,19 +1,17 @@
-import Menu from "../components/menu.jsx";
-import Header from "../components/header.jsx";
+import AppLayout from "../components/appLayout.jsx";
 import {useState, useEffect} from "react";
 import Header2 from "../components/header2.jsx";
 import OpenFromButton from "../components/openFromButton.jsx";
-import DataBalons from "../components/dadaBalons.jsx";
-
+import DataBalloons from "../components/dadaBalons.jsx";
 import ModalRevenues from "../components/modalRevenues.jsx";
-import SideMenu from "../components/sideMenu.jsx";
 import Select from "../components/select.jsx";
-import { MenuProvider } from "../context/menuContext.jsx";
 import {useForm} from "react-hook-form";
 import MainRequests from "../services/requests.js";
 import Inputs from "../components/inputs.jsx";
-import { Loader2 } from "lucide-react";
+import {Loader2, Receipt} from "lucide-react";
 import DateFilterDropdown from "../components/DateFilterDropdown.jsx";
+import {FormateMonetaryValue} from "../services/formatService.js";
+import FormButtons from "../components/formButtons.jsx";
 
 const requests = new MainRequests()
 
@@ -57,9 +55,12 @@ function RevenuesPage() {
             const response_members = await requests.onGet("members");
             const response_branches = await requests.onGet("branches");
 
-            console.log(response_revenues)
+            if (response_revenues.length !== undefined ){
+                setRevenues(response_revenues);
+            }else{
+                setRevenues([]);
+            }
 
-            setRevenues(response_revenues.length !== undefined ? response_revenues : []);
             setMembers(response_members.length !== 0 ? response_members : []);
             setBranches(response_branches.length !== 0 ? response_branches : []);
         } catch (error) {
@@ -83,6 +84,11 @@ function RevenuesPage() {
         ? revenues.filter((revenue) =>
             revenue.member.toLowerCase().includes(searchBarTerm.toLowerCase()))
         : revenues;
+
+    const sumRevenues = filteredRevenues.reduce(
+        (acumulado, objetoAtual) => acumulado + parseFloat(objetoAtual.value),
+        0
+    );
 
     useEffect(() => {
         if (searchTerm && searchTerm.length > 0) {
@@ -109,24 +115,21 @@ function RevenuesPage() {
     // Tela de carregamento inicial real baseada no estado isLoading
 
     return (
-        <div className="justify-center h-screen w-full">
-            <MenuProvider>
-                <Header/>
-                <SideMenu/>
-            </MenuProvider>
-            <Menu/>
+        <AppLayout
+            title="Receitas"
+            icon={<Receipt size={16}/>}
+            orgName="ADEB"
+        >
 
             <div className="flex justify-center">
                 <div className="flex flex-col justify-start mt-8 p-4 bg-bg-secondary-color border border-bg-secondary-destack-color rounded-lg shadow-md gap-5 w-[90vw] h-[90vh] md:w-[55vw] md:h-[80vh] overflow-hidden">
                     <section className="flex justify-between items-center shrink-0">
                         <Header2
                             title={"Fomulário de receitas"}
-                            description={"Formulário de cadastro de receitas"}
+                            description={`Total: ${FormateMonetaryValue(sumRevenues)}`}
                         />
                         <div className="flex justify-center ">
-                            <OpenFromButton onClick={onShowForm}>
-                                {"Nova receita"}
-                            </OpenFromButton>
+                            <OpenFromButton onClick={onShowForm}>{showForm ? "Fechar" : "Nova Receita"}</OpenFromButton>
                         </div>
                     </section>
 
@@ -229,21 +232,7 @@ function RevenuesPage() {
                                         ]} />
                                     </section>
 
-                                    <div className="w-full flex flex-row mt-4 gap-4">
-                                        <button
-                                            type="submit"
-                                            className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-colors"
-                                        >
-                                            Submit
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowForm(false)}
-                                            className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-colors"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
+                                    <FormButtons cancelFunction={() => setShowForm(false)} />
                                 </form>
                             </div>
                         </div>
@@ -260,7 +249,7 @@ function RevenuesPage() {
                             <p className="text-center text-xs text-gray-400 py-4">Nenhuma receita encontrada.</p>
                         ) : (
                         filteredRevenues.map((data) => (
-                            <DataBalons
+                            <DataBalloons
                                 key={data.id}
                                 type={data.type}
                                 date={data.date}
@@ -296,7 +285,7 @@ function RevenuesPage() {
                         )}
                 </div>
             </div>
-        </div>
+        </AppLayout>
     );
 }
 

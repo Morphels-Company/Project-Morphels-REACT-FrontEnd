@@ -1,14 +1,11 @@
-import Header from "../components/header.jsx";
-import Menu from "../components/menu.jsx";
-import {User, Church, MapPinHouse, ListCheck, Loader2} from "lucide-react";
+import {User, Church, MapPinHouse, ListCheck, Loader2, Settings} from "lucide-react";
 import {useState, useEffect} from "react";
 import MainRequests from "../services/requests.js";
 import UsersPage from "../components/subpages/settingsUsersPage.jsx";
 import SectorsPage from "../components/subpages/settingsSectorsPage.jsx";
 import BranchesPage from "../components/subpages/settingsBranchesPage.jsx";
 import PermissionsPage from "../components/subpages/settingsPermissionsPage.jsx";
-import {MenuProvider} from "../context/menuContext.jsx";
-import SideMenu from "../components/sideMenu.jsx";
+import AppLayout from "../components/appLayout.jsx";
 
 const requests = new MainRequests();
 
@@ -71,12 +68,11 @@ function SettingsPage() {
     const currentPage = pages[activePage]
 
     return (
-        <div className="justify-center h-[90vh] w-screen">
-            <MenuProvider>
-                <Header/>
-                <SideMenu/>
-            </MenuProvider>
-            <Menu/>
+        <AppLayout
+            title="Configurações"
+            icon={<Settings size={16}/>}
+            orgName="ADEB"
+        >
 
             <section className="flex justify-center items-center mt-7">
                 <ul className="flex flex-row bg-bg-secondary-color rounded-sm items-center shadow-lg w-[80vw] md:w-[55vw]">
@@ -109,7 +105,7 @@ function SettingsPage() {
                     <h2>Carregando...</h2>
                 </div>
             </div>}
-        </div>
+        </AppLayout>
     );
 }
 

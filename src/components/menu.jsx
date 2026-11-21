@@ -67,7 +67,7 @@ function Menu() {
 
     return (
         <div className='flex justify-center items-center mt-7 desktop-only-flex'>
-            <ul className='w-[55vw] flex flex-row bg-bg-primary-color rounded-sm items-center shadow-lg shadow-bg-secondary-destack-color'>
+            <ul className='w-[55vw] flex flex-row bg-bg-primary-color rounded-xl items-center shadow-lg shadow-bg-secondary-destack-color'>
                 {pagesPermissions.map((page) => {
                         if (page.can_view === true && presetPages[page.page_name] !== undefined) {
                             return (

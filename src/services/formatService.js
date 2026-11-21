@@ -5,3 +5,10 @@ export function FormateDate(date) {
         year: "numeric",
     })
 }
+
+export function FormateMonetaryValue(value) {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    }).format(value);
+}

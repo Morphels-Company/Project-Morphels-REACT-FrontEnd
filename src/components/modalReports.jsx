@@ -4,6 +4,7 @@ import Header2 from "./header2.jsx";
 import Inputs from "./inputs.jsx";
 import MainRequests from "../services/requests.js";
 import Select from "./select.jsx";
+import FormButtons from "./formButtons.jsx";
 
 const request = new MainRequests()
 
@@ -33,8 +34,8 @@ function ModalReports({ onHideForm, onFetch, branches }) {
         <div className="fixed inset-0 bg-[rgb(0,0,0,0.7)] bg-opacity-50 flex items-center justify-center">
             <div className="flex flex-col bg-bg-secondary-color h-[85%] w-[80%] md:w-[55%] p-6 rounded-lg shadow-lg space-y-4 overflow-auto">
                 <Header2
-                    title={"Create new report"}
-                    description={"Form to create reports"}
+                    title={"Criar novo relatório"}
+                    description={"Formulário de criação de novos relatórios"}
                 />
                 <form
                     action={() => handleSubmit(onPostReportPreset)()}
@@ -97,20 +98,7 @@ function ModalReports({ onHideForm, onFetch, branches }) {
                         </section>
 
                     </div>
-                    <div className="w-full flex flex-row mt-4 gap-4 ">
-                        <button
-                            type="submit"
-                            className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete"
-                        >
-                            Submit
-                        </button>
-                        <button
-                            onClick={onHideForm}
-                            className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete"
-                        >
-                            Cancel
-                        </button>
-                    </div>
+                    <FormButtons cancelFunction={onHideForm} />
                 </form>
             </div>
         </div>

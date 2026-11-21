@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import Inputs from "../inputs.jsx";
 import Header2 from "../header2.jsx";
 import Select from "../select.jsx";
+import FormButtons from "../formButtons.jsx";
 
 const request = new MainRequests();
 
@@ -64,7 +65,7 @@ export default function BranchesPage() {
                 <section>
                     <button
                         onClick={() => setShowForm(true)}
-                        className="flex gap-2 bg-black text-primery-titles-color text-sm p-2 rounded-md items-center"
+                        className="flex gap-2 bg-black text-white text-sm p-2 rounded-md items-center"
                     >
                         <Plus size={16} />
                         <p>Nova Filial</p>
@@ -91,7 +92,7 @@ export default function BranchesPage() {
 
             {showForm && (
                 <div className="fixed inset-0 bg-[rgb(0,0,0,0.7)] flex items-center justify-center">
-                    <div className="flex flex-col bg-bg-secondary-color h-[70%] w-[80%] md:w-[33%] p-6 rounded-lg shadow-lg space-y-4 overflow-auto">
+                    <div className="flex flex-col justify-center bg-bg-secondary-color h-[45%] w-[80%] md:w-[33%] p-6 rounded-lg shadow-lg space-y-4 overflow-auto">
                         <form
                             action={() => handleSubmit(onCreateBranch)()}
                             className="flex flex-col space-y-3"
@@ -131,21 +132,7 @@ export default function BranchesPage() {
                                 />
                             </section>
 
-                            <div className="w-full flex flex-row mt-4 gap-4">
-                                <button
-                                    type="submit"
-                                    className="bg-neutral-950 text-white text-xs px-4 py-2 rounded-lg hover:bg-neutral-600 transition-discrete"
-                                >
-                                    Salvar
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => { reset(); setShowForm(false); }}
-                                    className="bg-white border text-xs border-gray-200 shadow-xs text-black px-4 py-2 rounded-lg hover:bg-slate-200 transition-discrete"
-                                >
-                                    Cancelar
-                                </button>
-                            </div>
+                            <FormButtons cancelFunction={() => { reset(); setShowForm(false); }} />
                         </form>
                     </div>
                 </div>
